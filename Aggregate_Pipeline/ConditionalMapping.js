@@ -1,5 +1,10 @@
-// Objective: Add a new field priceCategory that classifies each product as "Expensive" if the price is greater than $1000, otherwise "Affordable".
-db.students.aggregate([
+
+
+
+// Objective: Add a new field priceCategory that classifies 
+// each product as "Expensive" if the price is greater than 
+// $1000, otherwise "Affordable".
+db.products.aggregate([
     {
         $project: {
             _id: 0,
@@ -14,8 +19,11 @@ db.students.aggregate([
         }
     }
 ])
+
+
+
 // Objective: Classify products based on their price into "Cheap", "Moderate", or "Expensive".
-db.students.aggregate([
+db.products.aggregate([
     {
         $project: {
             _id: 0,
@@ -55,8 +63,7 @@ db.products.aggregate([
     }
 ]);  
 // Objective: Concatenate the status of the product to its name based on availability.
-
-db.students.aggregate([
+db.products.aggregate([
     {$project : {
         _id: 0,
         productName : {
@@ -72,7 +79,7 @@ db.students.aggregate([
     }]
 )
 // Objective: Add a new field that reflects a discount percentage based on the product's category.
-db.students.aggregate([
+db.products.aggregate([
     {$project : {
             _id: 0,
             productName : 1,

@@ -1,4 +1,4 @@
-db.students.insertMany([
+db.products.insertMany([
     {
         "productName": "Laptop",
         "category": "Electronics",
@@ -113,7 +113,7 @@ db.students.insertMany([
 
 
 // Question: Project a new field priceCategory which categorizes the price as 'Low', 'Medium', or 'High'.
-db.students.aggregate([
+db.products.aggregate([
     {
         $project: {
             _id: 0,
@@ -131,7 +131,7 @@ db.students.aggregate([
     }
 ]);
 // Question: Include product name and a new field inventoryStatus indicating if the stock level is 'Empty', 'Low', or 'Adequate'.
-db.students.aggregate([
+db.products.aggregate([
     {
         $project: {
             _id: 0,
@@ -149,7 +149,7 @@ db.students.aggregate([
     }
 ]);
 // Question: Display product name and a newRelease field which checks if the release date is within the last year.
-db.students.aggregate([
+db.products.aggregate([
     {
         $project: {
             _id: 0,
@@ -165,8 +165,13 @@ db.students.aggregate([
         }
     }
 ]);
-// Question: Project the name and a ratingLevel indicating if the average rating is 'Poor', 'Good', or 'Excellent'.
-db.students.aggregate([
+
+
+
+
+// Question: Project the name and a ratingLevel indicating if the 
+// average rating is 'Poor', 'Good', or 'Excellent'.
+db.products.aggregate([
     {
         $project: {
             _id: 0,
@@ -174,17 +179,30 @@ db.students.aggregate([
             fromLastYear: {
                 $switch: {
                     branches: [
-                        { case: { $gt: [{ $avg: "$ratings.score" }, 4] }, then: "Fantastic" },
-                        { case: { $lt: [{ $avg: "$ratings.score" }, 2] }, then: "Poor" },
-                        { case: { $gt: [{ $avg: "$ratings.score" }, 2] }, then: "Medium" }
+                        {
+                            case: { $gt: [{ $avg: "$ratings.score" }, 4] },
+                            then: "Fantastic"
+                        },
+                        {
+                            case: { $lt: [{ $avg: "$ratings.score" }, 2] },
+                            then: "Poor"
+                        },
+                        {
+                            case: { $gt: [{ $avg: "$ratings.score" }, 2] },
+                            then: "Medium"
+                        }
                     ],
                 }
             }
         }
     }
 ]);
+
+
+
+
 // Question: Calculate a profitability field based on the cost and price which indicates if the product is 'Profitable', 'Break-even', or 'Loss'.
-db.students.aggregate([
+db.products.aggregate([
     {
         $project: {
             _id: 0,
@@ -202,59 +220,80 @@ db.students.aggregate([
 ]);
 // Question: Display product name and a userRating field indicating if it's 'Unrated', 'Poor', 'Average', or 'Excellent'.
 
-db.students.aggregate([
-    {$project : {
-        _id:0,
-        productName:1,
-        fromLastYear:{
-            $switch : {
-                branches : [
-                    {case : { $eq : [{$size : "$ratings"},0]}, then : "no review"},
-                    {case : { $and : [ 
-                        {$gte : [{$avg:"$ratings.score"},2]},
-                        {$lte : [{$avg:"$ratings.score"},3]},
-                    ]},  then : "Average"},
-                    {case : { $and :[
-                        {$gte : [{$avg: "$ratings.score"},3]},   
-                        {$lte : [{$avg: "$ratings.score"},4]},   
-                    ]},then : "good"},
-                    {case : { $and :[
-                        {$gte : [{$avg: "$ratings.score"},4]},   
-                        {$lte : [{$avg: "$ratings.score"},5]},   
-                    ]},then : "Superb"},
-                ],
-                default : "Not got anything"
+db.products.aggregate([
+    {
+        $project: {
+            _id: 0,
+            productName: 1,
+            fromLastYear: {
+                $switch: {
+                    branches: [
+                        { case: { $eq: [{ $size: "$ratings" }, 0] }, then: "no review" },
+                        {
+                            case: {
+                                $and: [
+                                    { $gte: [{ $avg: "$ratings.score" }, 2] },
+                                    { $lte: [{ $avg: "$ratings.score" }, 3] },
+                                ]
+                            }, then: "Average"
+                        },
+                        {
+                            case: {
+                                $and: [
+                                    { $gte: [{ $avg: "$ratings.score" }, 3] },
+                                    { $lte: [{ $avg: "$ratings.score" }, 4] },
+                                ]
+                            }, then: "good"
+                        },
+                        {
+                            case: {
+                                $and: [
+                                    { $gte: [{ $avg: "$ratings.score" }, 4] },
+                                    { $lte: [{ $avg: "$ratings.score" }, 5] },
+                                ]
+                            }, then: "Superb"
+                        },
+                    ],
+                    default: "Not got anything"
+                }
             }
-        } 
-    }}
+        }
+    }
 ]);
 // Question: Calculate and display a shippingCost based on the weight of the product, classified into 'Low', 'Medium', 'High'.
 db.products.aggregate([
-    { $project: {
-      productName: 1,
-      shippingCost: {
-        $switch: {
-          branches: [
-            { case: { $lt: ["$weight", 5] }, then: "Low" },
-            { case: { $lt: ["$weight", 20] }, then: "Medium" }
-          ],
-          default: "High"
-        }
-      }
-    }}
-  ]);
-//Question: Display the product name and maintenance based on the product type indicating if it's 'High', 'Medium', or 'Low'.
-db.students.aggregate([
-    {$project : {
-        _id:0,
-        productName:1,
-        fromLastYear:{
-            $switch : {
-                branches : [
-                    {case : { $in : ["$tags",["high-performance","headphones"]]}, then : "High"},
-                ],
-                default : "Not got anything"
+    {
+        $project: {
+            productName: 1,
+            shippingCost: {
+                $switch: {
+                    branches: [
+                        { case: { $lt: ["$weight", 5] }, then: "Low" },
+                        { case: { $lt: ["$weight", 20] }, then: "Medium" }
+                    ],
+                    default: "High"
+                }
             }
-        } 
-    }}
+        }
+    }
+]);
+
+
+
+//Question: Display the product name and maintenance based on the product type indicating if it's 'High', 'Medium', or 'Low'.
+db.products.aggregate([
+    {
+        $project: {
+            _id: 0,
+            productName: 1,
+            fromLastYear: {
+                $switch: {
+                    branches: [
+                        { case: { $in: ["$tags", ["high-performance", "headphones"]] }, then: "High" },
+                    ],
+                    default: "Not got anything"
+                }
+            }
+        }
+    }
 ]);

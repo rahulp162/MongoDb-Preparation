@@ -251,6 +251,9 @@ db.orders.aggregate([
         }
     }
 ])
+
+
+
 // Question: Determine the average number of items per order for each customer.
 db.orders.aggregate([
     {
@@ -280,6 +283,10 @@ db.orders.aggregate([
         }
     }
 ])
+
+
+
+
 // Question: Find the average item price for each city.
 db.orders.aggregate([
     {
@@ -294,6 +301,10 @@ db.orders.aggregate([
         }
     }
 ])
+
+
+
+
 // Question: Calculate the total revenue for each city.
 db.orders.aggregate([
     {
