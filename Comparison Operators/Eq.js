@@ -17,7 +17,7 @@ db.products.insertMany([
         ],
         "available": true,
         "tags": ["laptop", "ultrabook", "high-performance"],
-        "releaseDate": "2023-01-01T00:00:00.000Z",
+        "releaseDate": "2023-01-01",
         "meta": null,
         "dimensions": { "width": 35.8, "height": 1.9, "depth": 24.7 },
         "relatedProducts": [123, 456],
@@ -90,7 +90,7 @@ db.products.insertMany([
         "meta": null,
         "dimensions": { "width": 123.0, "height": 71.0, "depth": 6.0 },
         "relatedProducts": [114, 115],
-        "reviews": [],
+        "reviews": ["good","not good","fine"],
         "discounted": false
     },
     {
@@ -192,7 +192,7 @@ db.products.insertMany([
         "price": 850.00,
         "ratings": [],
         "available": true,
-        "tags": ["eco-friendly", "electric", "scooter"],
+        "tags": ["eco-friendly", "electric", "gaming"],
         "releaseDate": new Date("2023-06-01T00:00:00.000Z"),
         "meta": null,
         "dimensions": { "width": 25.0, "height": 40.0, "depth": 30.0 },
@@ -202,169 +202,115 @@ db.products.insertMany([
     }
 ])
 
-//Write a query to find the product with the productName "Gaming PC".
-db.products.find({"productName":"Gaming PC"})
-
-//DATATYPE variations
-//Find all products where the tags field is an array containing the string "eco-friendly"\
-db.products.find({"tag":"eco-friendly"})
-
-//Find all products where the releaseDate is of type Date and is after January 1, 2023
+//Find products with a price exactly equal to 999.99
 db.products.find({
-    "releaseDate":{
-        $gt:new Date("2023-01-01")
-    }
+    price:{$eq:999.99}
 })
 
-//Find all products where the available field is a boolean and true:
-db.products.find({
-    "available":true
+//Update the status field of a product where the productName is "Laptop" to "Out of Stock"
+db.products.update(
+    {productName:{$eq:"Laptop"}},
+    {$set:{status:"Out Of Stock"}}
+)
+
+//Update all products where category is "Electronics" and set the discounted field to true.
+db.products.updateMany(
+    {category:{$eq:"Electronics"}},
+    {$set:{
+        discounted:true
+    }}
+)
+
+//Delete a product where the price is exactly 1200.00.
+db.products.deleteOne({price:{$eq:1200.00}})
+
+//Delete products where the tags array contains the tag "gaming".
+db.products.deleteMany({tags:{$eq:"gaming"}})
+
+//Find distinct tags where the category is "Home Appliances".
+db.products.distinct("tags",{
+    category:{$eq:"Home Appliances"}
 })
 
-//REGEX variations
-//exact match
-db.products.find({"category":"Electronics"})
-
-//case insensitive match
-db.products.find({"category":{
-    $regex: "^Electronics$",
-    $options: "i"
-}})
-
-//Find documents where the productName starts with "E".
+//Find products where the tags array contains "eco-friendly" and available is true but the price is not 1200.00
 db.products.find({
-    "productName":{
-        $regex:"^E"
-    }
-})
-//Find documents where the productName ends with "E"
-db.products.find({
-    "productName":{
-        $regex:"E$",
-        $options:"i"
-    }
-})
-//Find documents where the productName contains "oo".
-db.products.find({
-    "productName":{
-        $regex:"oo",
-        $options:"i"
-    }
-})
-//Find documents where the productName contains both "Espresso" and "Machine" (order doesn't matter).
-db.products.find({
-    "productName":{
-        $regex:"(el).*?(oo)",
-        $options:"i"
-    }
-})
-//Find documents where the ratings field is an array with at least one object that contains a score greater than 4
-db.products.find({
-    "ratings.score":{
-        $gt:4
-    }
-})
-//Find all products where the meta field is null
-db.products.find({
-    "meta":null
-})
-//Find products where the dimensions field contains a width greater than 20 (assuming dimensions is an embedded document)
-db.products.find({
-    "dimensions.width":{
-        $gt:20
-    }
-})
-//Find all products where the specs.features.autoCleaning field is of type boolean and is set to true
-db.products.find({
-    "specs.features.autoCleaning":true
-})
-//Find documents where the productName contains a period (".", special charecter)
-db.products.find({
-    "productName":{
-        $regex:"\\."
-    }
-})
-//Find documents where the productName contains a period (".") between "t" and "i"
-db.products.find({
-    "productName":{
-        $regex:"t\\.i"
-    }
-})
-//Find documents where the productName is exactly 15 characters long
-db.products.find({
-    "productName":{
-        $regex:"^.{7}$"
-    }
-})
-//Find documents where the productName is greater than 10 characters
-db.products.find({
-    "productName":{
-        $regex:"^.{11,}$"
-    }
-})
-//Find documents where the productName is greater than or equal to 10 characters
-db.products.find({
-    "productName":{
-        $regex:"^.{10,}$"
-    }
-})
-//Find documents where the productName is less than or equal to 10 characters
-db.products.find({
-    "productName":{
-        $regex:"^.{0,10}$"
-    }
+    tags:{$in:"eco-friendly"},
+    available:{$eq:true},
+    price:{$ne:1200.00}
 })
 
-//CONDITIONAL QUERIES:
-//Find all products released after "2023-03-01"
+//Find products where the ratings contain a score of 5 and ratings.userId is "63b21d49c254d7e8456789ab"
 db.products.find({
-    
-})
-//Find products having Price less then 700$
-db.products.find({
-    "price": {
-        $lt: 700
-    }
+  "ratings.score": { $eq: 5 },
+  "ratings.userId": { $eq: "63b21d49c254d7e8456789ab" }
 })
 
-//Find products having Price less than $900 and greater than $400
+//Find products where the tags contain "gaming" and the releaseDate is "2023-02-15"
+db.products.find({
+  tags: { $in: ["gaming"] },
+  releaseDate: { $eq: "2023-02-15T00:00:00.000Z" }
+})
+
+//Find products where specs.features.type is "Smart TV" and specs.screenSize is "55 inches"
+db.products.find({
+  "specs.features.type": { $eq: "Smart TV" },
+  "specs.screenSize": { $eq: "55 inches" }
+})
+
+//Find products where the tags array exists and contains exactly 3 elements, and the productName is "Bluetooth Headphones"
 db.products.find({
     $and:[
-        {"price":{$lt:900}},
-        {"price":{$gt:400}}
+        {
+            tags:{
+                $exists:true,
+                $size:3
+            }
+        },
+        {
+            productName:{$eq:"Bluetooth Headphones"}
+        }
     ]
 })
 
-
-//Find by DATE
-//Find products released after 2023-05-01
+//Find products where the reviews array contains exact 3 elements and the category is "Electronics"
 db.products.find({
-    "releaseDate":{$gt:
-        "2023-05-01"
-    }
-})
-//Find products released on or before 2023-05-01
-db.products.find({
-    "releaseDate":{$lte:
-        "2023-05-01" 
-    }
-})
-//Find products released on new Date("2023-06-01T00:00:00.000Z")
-db.products.find({
-    "releaseDate":{$eq:
-        new Date("2023-06-01T00:00:00.000Z")
-    }
-})
-//Find products released on new ISODate("2023-06-01T00:00:00.000Z")
-db.products.find({
-    "releaseDate":{$eq:
-        new ISODate("2023-05-05T00:00:00.000Z")
-    }
+    $and:[
+        {category:{
+            $eq:"Electronics"
+        }},
+        {reviews:{
+            $size:3 
+        }}
+    ]
 })
 
+//Find products where the tags array contains "laptop" or "gaming", and the specs.ram is "16GB"
+db.products.find({
+    $and:[
+        {
+            tags:{
+                $in:["laptop","gaming"]
+            }
+        },
+        {
+            "specs.ram":{
+                $eq:"32GB"
+            }
+        }
+    ]
+})
 
-//
-
-
-
+//Find products where the releaseDate is either "2023-01-01" or "2023-03-10" and the tags array contains "high-performance"
+db.products.find({
+    $and:[
+        {
+            $or:[
+                {releaseDate:{$eq:"2023-01-01"}},
+                {releaseDate:{$eq:"2023-03-10"}}
+            ]
+        },{
+            tags:{$in:["high-performance"]}
+        }
+    ]
+})
 
