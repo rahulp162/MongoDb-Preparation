@@ -271,91 +271,10 @@ db.products.find({
 db.products.find({ 
     "relatedProducts": { $ne: 120 } 
 })
-// Find all products where the `price` is less than 500.
-db.products.find({ 
-    "price": { $lt: 500 } 
-})
-
-// Find all products that are not discounted and have a `price` greater than 1000.
-db.products.find({ 
-    "discounted": false, 
-    "price": { $gt: 1000 } 
-})
-
-// Find all products whose `category` is "Accessories" and `tags` contains "bluetooth".
-db.products.find({ 
-    "category": "Accessories", 
-    "tags": { $in: ["bluetooth"] } 
-})
-
-// Find all products where the `specs.storage.size` is either "512GB" or "1TB".
-db.products.find({ 
-    "specs.storage.size": { $in: ["512GB", "1TB"] } 
-})
-
-// Find all products where the `ratings` array contains a `score` of 4.
-db.products.find({ 
-    "ratings.score": 4 
-})
-
-// Find all products where the `releaseDate` is between "2023-03-01T00:00:00.000Z" and "2023-06-01T00:00:00.000Z".
-db.products.find({ 
-    "releaseDate": { 
-        $gte: new Date("2023-03-01T00:00:00.000Z"), 
-        $lte: new Date("2023-06-01T00:00:00.000Z") 
-    } 
-})
-
-// Find all products where the `specs.processor` is either "Intel Core i7" or "AMD Ryzen 9".
-db.products.find({ 
-    "specs.processor": { $in: ["Intel Core i7", "AMD Ryzen 9"] } 
-})
-
-// Find all products where the `tags` array contains both "gaming" and "high-end".
-db.products.find({ 
-    "tags": { $all: ["gaming", "high-end"] } 
-})
-
-// Find all products that have no `specs.storage.type` field.
-db.products.find({ 
-    "specs.storage.type": { $exists: false } 
-})
-
-// Find all products where the `price` is greater than 800 but less than 1500.
-db.products.find({ 
-    "price": { $gt: 800, $lt: 1500 } 
-})
-
-// Find all products where the `ratings` array contains at least one review with `score` 5 and `userId` "63b21d49c254d7e8456789ab".
-db.products.find({ 
-    "ratings": { 
-        $elemMatch: { 
-            "score": 5, 
-            "userId": "63b21d49c254d7e8456789ab" 
-        } 
-    } 
-})
-
-// Find all products where the `tags` array does not contain "smartphone".
-db.products.find({ 
-    "tags": { $nin: ["smartphone"] } 
-})
-
 // Find all products where the `specs.ram` is not "16GB" and `price` is greater than 1000.
 db.products.find({ 
     "specs.ram": { $ne: "16GB" }, 
     "price": { $gt: 1000 } 
-})
-
-// Find all products that are `available: false` and released after "2023-05-01T00:00:00.000Z".
-db.products.find({ 
-    "available": false, 
-    "releaseDate": { $gt: new Date("2023-05-01T00:00:00.000Z") } 
-})
-
-// Find all products where the `ratings` array has more than one review (i.e., `ratings` array length greater than 1).
-db.products.find({ 
-    "ratings": { $size: { $gt: 1 } } 
 })
 
 // Find all products whose `category` is not "Home Appliances" and `price` is greater than 500.
