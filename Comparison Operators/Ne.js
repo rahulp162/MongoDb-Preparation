@@ -282,3 +282,5 @@ db.products.find({
     "category": { $ne: "Home Appliances" }, 
     "price": { $gt: 500 } 
 })
+
+//new change
