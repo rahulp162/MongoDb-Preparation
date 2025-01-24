@@ -202,169 +202,83 @@ db.products.insertMany([
     }
 ])
 
-//Write a query to find the product with the productName "Gaming PC".
-db.products.find({"productName":"Gaming PC"})
-
-//DATATYPE variations
-//Find all products where the tags field is an array containing the string "eco-friendly"\
-db.products.find({"tag":"eco-friendly"})
-
-//Find all products where the releaseDate is of type Date and is after January 1, 2023
+//Find all products whose category is not "Electronics"
 db.products.find({
-    "releaseDate":{
-        $gt:new Date("2023-01-01")
-    }
+    category: { $ne: "Electronics" }
 })
 
-//Find all products where the available field is a boolean and true:
+//Find all products that are available and have a price not equal to 1200.00.
 db.products.find({
-    "available":true
-})
-
-//REGEX variations
-//exact match
-db.products.find({"category":"Electronics"})
-
-//case insensitive match
-db.products.find({"category":{
-    $regex: "^Electronics$",
-    $options: "i"
-}})
-
-//Find documents where the productName starts with "E".
-db.products.find({
-    "productName":{
-        $regex:"^E"
-    }
-})
-//Find documents where the productName ends with "E"
-db.products.find({
-    "productName":{
-        $regex:"E$",
-        $options:"i"
-    }
-})
-//Find documents where the productName contains "oo".
-db.products.find({
-    "productName":{
-        $regex:"oo",
-        $options:"i"
-    }
-})
-//Find documents where the productName contains both "Espresso" and "Machine" (order doesn't matter).
-db.products.find({
-    "productName":{
-        $regex:"(el).*?(oo)",
-        $options:"i"
-    }
-})
-//Find documents where the ratings field is an array with at least one object that contains a score greater than 4
-db.products.find({
-    "ratings.score":{
-        $gt:4
-    }
-})
-//Find all products where the meta field is null
-db.products.find({
-    "meta":null
-})
-//Find products where the dimensions field contains a width greater than 20 (assuming dimensions is an embedded document)
-db.products.find({
-    "dimensions.width":{
-        $gt:20
-    }
-})
-//Find all products where the specs.features.autoCleaning field is of type boolean and is set to true
-db.products.find({
-    "specs.features.autoCleaning":true
-})
-//Find documents where the productName contains a period (".", special charecter)
-db.products.find({
-    "productName":{
-        $regex:"\\."
-    }
-})
-//Find documents where the productName contains a period (".") between "t" and "i"
-db.products.find({
-    "productName":{
-        $regex:"t\\.i"
-    }
-})
-//Find documents where the productName is exactly 15 characters long
-db.products.find({
-    "productName":{
-        $regex:"^.{7}$"
-    }
-})
-//Find documents where the productName is greater than 10 characters
-db.products.find({
-    "productName":{
-        $regex:"^.{11,}$"
-    }
-})
-//Find documents where the productName is greater than or equal to 10 characters
-db.products.find({
-    "productName":{
-        $regex:"^.{10,}$"
-    }
-})
-//Find documents where the productName is less than or equal to 10 characters
-db.products.find({
-    "productName":{
-        $regex:"^.{0,10}$"
-    }
-})
-
-//CONDITIONAL QUERIES:
-//Find all products released after "2023-03-01"
-db.products.find({
-    
-})
-//Find products having Price less then 700$
-db.products.find({
-    "price": {
-        $lt: 700
-    }
-})
-
-//Find products having Price less than $900 and greater than $400
-db.products.find({
-    $and:[
-        {"price":{$lt:900}},
-        {"price":{$gt:400}}
+    $and: [
+        {
+            available: { $eq: true }
+        }, {
+            price: { $ne: 1200.00 }
+        }
     ]
 })
 
-
-//Find by DATE
-//Find products released after 2023-05-01
-db.products.find({
-    "releaseDate":{$gt:
-        "2023-05-01"
-    }
-})
-//Find products released on or before 2023-05-01
-db.products.find({
-    "releaseDate":{$lte:
-        "2023-05-01" 
-    }
-})
-//Find products released on new Date("2023-06-01T00:00:00.000Z")
-db.products.find({
-    "releaseDate":{$eq:
-        new Date("2023-06-01T00:00:00.000Z")
-    }
-})
-//Find products released on new ISODate("2023-06-01T00:00:00.000Z")
-db.products.find({
-    "releaseDate":{$eq:
-        new ISODate("2023-05-05T00:00:00.000Z")
-    }
+//Find all products where the releaseDate is not equal to "2023-06-01T00:00:00.000Z."
+db.products.find({ 
+    "releaseDate": { $ne: new Date("2023-06-01T00:00:00.000Z") } 
 })
 
+//Find all products that do not have the tag "bluetooth."
+db.products.find({ 
+    "tags": { $ne: "bluetooth" } 
+})
 
-//
+//Find all products whose price is not equal to 850.00, and they are discounted: false.
+db.products.find({ 
+    "price": { $ne: 850.00 }, 
+    "discounted": false 
+})
 
+//Find all products that are available: true but have no ratings (i.e., an empty ratings array).
+db.products.find({ 
+    "available": true,
+    "ratings": { $size: 0 } 
+})
 
+//Find all products where the specs.processor is not "Intel Core i7."
+db.products.find({
+    "specs.processor": { $ne: "Intel Core i7" } 
+})
 
+//Find all products that are available: true and do not have "Smart TV" in their specs.features.type.
+db.products.find({ 
+    "available": true, 
+    "specs.features.type": { $ne: "Smart TV" } 
+})
 
+//Find all products whose tags array does not include the tag "eco-friendly."
+db.products.find({ 
+    "tags": { $ne: "eco-friendly" } 
+})
+
+//Find all products where the ratings.score is not equal to 5.
+db.products.find({ 
+    "ratings.score": { $ne: 5 } 
+})
+
+//Find all products where the category is "Electronics" and price is not equal to 999.99.
+db.products.find({ 
+    "category": "Electronics", 
+    "price": { $ne: 999.99 } 
+})
+
+//Find all products that do not have a relatedProducts array with an ID of 120.
+db.products.find({ 
+    "relatedProducts": { $ne: 120 } 
+})
+// Find all products where the `specs.ram` is not "16GB" and `price` is greater than 1000.
+db.products.find({ 
+    "specs.ram": { $ne: "16GB" }, 
+    "price": { $gt: 1000 } 
+})
+
+// Find all products whose `category` is not "Home Appliances" and `price` is greater than 500.
+db.products.find({ 
+    "category": { $ne: "Home Appliances" }, 
+    "price": { $gt: 500 } 
+})

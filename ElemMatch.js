@@ -16,7 +16,7 @@ db.products.insertMany([
             { "userId": "63b21d49c254d7e8456789ac", "score": 4, "reviewDate": "2023-09-16T00:00:00.000Z" }
         ],
         "available": true,
-        "tags": ["laptop", "ultrabook", "high-performance"],
+        "tags": ["laptop", "ultrabook", "high-performance","5G"],
         "releaseDate": "2023-01-01T00:00:00.000Z",
         "meta": null,
         "dimensions": { "width": 35.8, "height": 1.9, "depth": 24.7 },
@@ -202,169 +202,42 @@ db.products.insertMany([
     }
 ])
 
-//Write a query to find the product with the productName "Gaming PC".
-db.products.find({"productName":"Gaming PC"})
-
-//DATATYPE variations
-//Find all products where the tags field is an array containing the string "eco-friendly"\
-db.products.find({"tag":"eco-friendly"})
-
-//Find all products where the releaseDate is of type Date and is after January 1, 2023
+//Find all products with at least one rating where the score is exactly 5.
 db.products.find({
-    "releaseDate":{
-        $gt:new Date("2023-01-01")
-    }
+    ratings:{$elemMatch:{
+        "score":{$eq:5}
+    }}
 })
 
-//Find all products where the available field is a boolean and true:
+//Retrieve products with a rating score of 4 or higher, submitted after August 1st, 2023.
 db.products.find({
-    "available":true
-})
-
-//REGEX variations
-//exact match
-db.products.find({"category":"Electronics"})
-
-//case insensitive match
-db.products.find({"category":{
-    $regex: "^Electronics$",
-    $options: "i"
-}})
-
-//Find documents where the productName starts with "E".
-db.products.find({
-    "productName":{
-        $regex:"^E"
-    }
-})
-//Find documents where the productName ends with "E"
-db.products.find({
-    "productName":{
-        $regex:"E$",
-        $options:"i"
-    }
-})
-//Find documents where the productName contains "oo".
-db.products.find({
-    "productName":{
-        $regex:"oo",
-        $options:"i"
-    }
-})
-//Find documents where the productName contains both "Espresso" and "Machine" (order doesn't matter).
-db.products.find({
-    "productName":{
-        $regex:"(el).*?(oo)",
-        $options:"i"
-    }
-})
-//Find documents where the ratings field is an array with at least one object that contains a score greater than 4
-db.products.find({
-    "ratings.score":{
-        $gt:4
-    }
-})
-//Find all products where the meta field is null
-db.products.find({
-    "meta":null
-})
-//Find products where the dimensions field contains a width greater than 20 (assuming dimensions is an embedded document)
-db.products.find({
-    "dimensions.width":{
-        $gt:20
-    }
-})
-//Find all products where the specs.features.autoCleaning field is of type boolean and is set to true
-db.products.find({
-    "specs.features.autoCleaning":true
-})
-//Find documents where the productName contains a period (".", special charecter)
-db.products.find({
-    "productName":{
-        $regex:"\\."
-    }
-})
-//Find documents where the productName contains a period (".") between "t" and "i"
-db.products.find({
-    "productName":{
-        $regex:"t\\.i"
-    }
-})
-//Find documents where the productName is exactly 15 characters long
-db.products.find({
-    "productName":{
-        $regex:"^.{7}$"
-    }
-})
-//Find documents where the productName is greater than 10 characters
-db.products.find({
-    "productName":{
-        $regex:"^.{11,}$"
-    }
-})
-//Find documents where the productName is greater than or equal to 10 characters
-db.products.find({
-    "productName":{
-        $regex:"^.{10,}$"
-    }
-})
-//Find documents where the productName is less than or equal to 10 characters
-db.products.find({
-    "productName":{
-        $regex:"^.{0,10}$"
+    ratings:{
+        $elemMatch:{
+            "score":{$gte:4},
+            "reviewDate":{$gt:"2023-08-01"}
+        }
     }
 })
 
-//CONDITIONAL QUERIES:
-//Find all products released after "2023-03-01"
+//Find Electronics products with high-performance laptop tags and ratings score above 4.
+
 db.products.find({
-    
-})
-//Find products having Price less then 700$
-db.products.find({
-    "price": {
-        $lt: 700
+    tags: "high-performance",
+    ratings: { 
+        $elemMatch: { 
+            score: { $gt: 4 } 
+        } 
     }
 })
 
-//Find products having Price less than $900 and greater than $400
+//Find Electronics products that: Have both "high-performance" and "5G" tags, and Contain at least one rating with a score higher than 4
 db.products.find({
     $and:[
-        {"price":{$lt:900}},
-        {"price":{$gt:400}}
+        {tags:
+            {$all:["high-performance", "5G"]}
+        },
+        {ratings:{
+            $elemMatch:{score:{$gt:4}}
+        }}
     ]
 })
-
-
-//Find by DATE
-//Find products released after 2023-05-01
-db.products.find({
-    "releaseDate":{$gt:
-        "2023-05-01"
-    }
-})
-//Find products released on or before 2023-05-01
-db.products.find({
-    "releaseDate":{$lte:
-        "2023-05-01" 
-    }
-})
-//Find products released on new Date("2023-06-01T00:00:00.000Z")
-db.products.find({
-    "releaseDate":{$eq:
-        new Date("2023-06-01T00:00:00.000Z")
-    }
-})
-//Find products released on new ISODate("2023-06-01T00:00:00.000Z")
-db.products.find({
-    "releaseDate":{$eq:
-        new ISODate("2023-05-05T00:00:00.000Z")
-    }
-})
-
-
-//
-
-
-
-

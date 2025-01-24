@@ -192,7 +192,7 @@ db.products.insertMany([
         "price": 850.00,
         "ratings": [],
         "available": true,
-        "tags": ["eco-friendly", "electric", "scooter"],
+        "tags": ["eco-friendly", "electric", "gaming"],
         "releaseDate": new Date("2023-06-01T00:00:00.000Z"),
         "meta": null,
         "dimensions": { "width": 25.0, "height": 40.0, "depth": 30.0 },
@@ -202,169 +202,151 @@ db.products.insertMany([
     }
 ])
 
-//Write a query to find the product with the productName "Gaming PC".
-db.products.find({"productName":"Gaming PC"})
-
-//DATATYPE variations
-//Find all products where the tags field is an array containing the string "eco-friendly"\
-db.products.find({"tag":"eco-friendly"})
-
-//Find all products where the releaseDate is of type Date and is after January 1, 2023
+//Find products where the price is 850.00 and the tags contains "electric" or "gaming"
 db.products.find({
-    "releaseDate":{
-        $gt:new Date("2023-01-01")
-    }
-})
-
-//Find all products where the available field is a boolean and true:
-db.products.find({
-    "available":true
-})
-
-//REGEX variations
-//exact match
-db.products.find({"category":"Electronics"})
-
-//case insensitive match
-db.products.find({"category":{
-    $regex: "^Electronics$",
-    $options: "i"
-}})
-
-//Find documents where the productName starts with "E".
-db.products.find({
-    "productName":{
-        $regex:"^E"
-    }
-})
-//Find documents where the productName ends with "E"
-db.products.find({
-    "productName":{
-        $regex:"E$",
-        $options:"i"
-    }
-})
-//Find documents where the productName contains "oo".
-db.products.find({
-    "productName":{
-        $regex:"oo",
-        $options:"i"
-    }
-})
-//Find documents where the productName contains both "Espresso" and "Machine" (order doesn't matter).
-db.products.find({
-    "productName":{
-        $regex:"(el).*?(oo)",
-        $options:"i"
-    }
-})
-//Find documents where the ratings field is an array with at least one object that contains a score greater than 4
-db.products.find({
-    "ratings.score":{
-        $gt:4
-    }
-})
-//Find all products where the meta field is null
-db.products.find({
-    "meta":null
-})
-//Find products where the dimensions field contains a width greater than 20 (assuming dimensions is an embedded document)
-db.products.find({
-    "dimensions.width":{
-        $gt:20
-    }
-})
-//Find all products where the specs.features.autoCleaning field is of type boolean and is set to true
-db.products.find({
-    "specs.features.autoCleaning":true
-})
-//Find documents where the productName contains a period (".", special charecter)
-db.products.find({
-    "productName":{
-        $regex:"\\."
-    }
-})
-//Find documents where the productName contains a period (".") between "t" and "i"
-db.products.find({
-    "productName":{
-        $regex:"t\\.i"
-    }
-})
-//Find documents where the productName is exactly 15 characters long
-db.products.find({
-    "productName":{
-        $regex:"^.{7}$"
-    }
-})
-//Find documents where the productName is greater than 10 characters
-db.products.find({
-    "productName":{
-        $regex:"^.{11,}$"
-    }
-})
-//Find documents where the productName is greater than or equal to 10 characters
-db.products.find({
-    "productName":{
-        $regex:"^.{10,}$"
-    }
-})
-//Find documents where the productName is less than or equal to 10 characters
-db.products.find({
-    "productName":{
-        $regex:"^.{0,10}$"
-    }
-})
-
-//CONDITIONAL QUERIES:
-//Find all products released after "2023-03-01"
-db.products.find({
-    
-})
-//Find products having Price less then 700$
-db.products.find({
-    "price": {
-        $lt: 700
-    }
-})
-
-//Find products having Price less than $900 and greater than $400
-db.products.find({
-    $and:[
-        {"price":{$lt:900}},
-        {"price":{$gt:400}}
+    price: { $eq: 850.00 },
+    $or: [
+        { tags: { $eq: "electric" } },
+        { tags: { $eq: "gaming" } }
     ]
 })
 
-
-//Find by DATE
-//Find products released after 2023-05-01
+//Find products where the releaseDate is exactly "2023-01-01" or category is "Transportation"
 db.products.find({
-    "releaseDate":{$gt:
-        "2023-05-01"
-    }
-})
-//Find products released on or before 2023-05-01
-db.products.find({
-    "releaseDate":{$lte:
-        "2023-05-01" 
-    }
-})
-//Find products released on new Date("2023-06-01T00:00:00.000Z")
-db.products.find({
-    "releaseDate":{$eq:
-        new Date("2023-06-01T00:00:00.000Z")
-    }
-})
-//Find products released on new ISODate("2023-06-01T00:00:00.000Z")
-db.products.find({
-    "releaseDate":{$eq:
-        new ISODate("2023-05-05T00:00:00.000Z")
-    }
+    $or:[
+        {releaseDate:{$eq:"2023-01-01"}},
+        {category:{$eq:"Transportation"}}
+    ]
 })
 
+//Find products where the price is 850.00 or the category is "Home Appliances"
+db.products.find({
+    $or:[
+        {category:"Home Appliances"},
+        {price:850.00}
+    ]
+})
 
-//
+//Find products where the tags contain "laptop" or price is less than 1000.00
+db.products.find({
+    $or:[
+        {tags:{$in:["laptop"]}},
+        {price:{$lt:1000.00}}
+    ]
+})
 
+//Find products where the price is 850.00 or the specs.processor is "Intel Core i7"
+db.products.find({
+    $or:[
+        {price:{$eq:850.00}},
+        {"specs.processor":{$eq:"Intel Core i7"}}
+    ]
+})
 
+//Find products where tags contains "smartphone" or "5G" and price is exactly 699.99
+db.products.find({
+    $or:[
+        {
+            tags:{$eq:"smartphone"}
+        },
+        {
+            tags:{$eq:"5G"}
+        }
+    ],
+    price:{$eq:699.99}
+})
 
+//Find products where the releaseDate is either "2023-01-01" or "2023-03-10" and the tags array contains "high-performance"
+db.products.find({
+    $and:[
+        {
+            $or:[
+                {releaseDate:{$eq:"2023-01-01"}},
+                {releaseDate:{$eq:"2023-03-10"}}
+            ]
+        },{
+            tags:{$in:["high-performance"]}
+        }
+    ]
+})
+
+//Find products that are either in the "Electronics" category or have a price of exactly $550
+db.products.find({
+  $or: [
+    { category: { $eq: "Electronics" } },
+    { price: { $eq: 550 } }
+  ]
+});
+
+//Find products that are either tagged with "gaming" or have a rating of 5 from any user
+db.products.find({
+  $or: [
+    { tags: { $eq: "gaming" } },
+    { "ratings.score": { $eq: 5 } }
+  ]
+});
+
+//Find products where the price is either exactly $850 or discounted
+db.products.find({
+  $or: [
+    { price: { $eq: 850 } },
+    { discounted: { $eq: true } }
+  ]
+});
+
+//Find products that either have "Intel Core i7" or "AMD Ryzen 9" processors
+db.products.find({
+  $or: [
+    { "specs.processor": { $eq: "Intel Core i7" } },
+    { "specs.processor": { $eq: "AMD Ryzen 9" } }
+  ]
+});
+
+//Find products that are either in the "Home Appliances" category or are tagged with "eco-friendly"
+db.products.find({
+  $or: [
+    { category: { $eq: "Home Appliances" } },
+    { tags: { $eq: "eco-friendly" } }
+  ]
+});
+
+//Find products that are either available or have a "Smart TV" feature
+db.products.find({
+  $or: [
+    { available: { $eq: true } },
+    { "specs.features.type": { $eq: "Smart TV" } }
+  ]
+});
+
+//Find products that are either released in 2023 or have a width dimension of exactly 25.0 cm
+db.products.find({
+  $or: [
+    { releaseDate: { $gte: new ISODate("2023-01-01T00:00:00.000Z") } },
+    { "dimensions.width": { $eq: 25.0 } }
+  ]
+});
+
+//Find products that are either related to product ID 120 or have "noiseCancellation" as a feature
+db.products.find({
+  $or: [
+    { relatedProducts: { $eq: 120 } },
+    { "specs.features.noiseCancellation": { $eq: true } }
+  ]
+});
+
+//Find products that either have a rating score of 4 or are tagged as "bluetooth"
+db.products.find({
+  $or: [
+    { "ratings.score": { $eq: 4 } },
+    { tags: { $eq: "bluetooth" } }
+  ]
+});
+
+//Find products that are either in the "Transportation" category or have a price greater than $1000
+db.products.find({
+  $or: [
+    { category: { $eq: "Transportation" } },
+    { price: { $gt: 1000 } }
+  ]
+});
 
