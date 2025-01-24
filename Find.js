@@ -272,12 +272,44 @@ db.products.find({
         $options: "i"
     }
 })
+
+db.employees.find({
+    $or: [
+        { productName: /Espresso/ },
+        { productName: /Machine/ }
+    ]
+});
+
+db.employees.find({
+    $or: [
+        { productName: /o1/ },
+        { productName: /Ma/ }
+    ]
+});
+
 //Find documents where the ratings field is an array with at least one object that contains a score greater than 4
 db.products.find({
     "ratings.score": {
         $gt: 4
     }
 })
+
+
+//Find documents where the ratings field is an array with at least one 
+//object that contains a score greater than 4
+
+db.products.find({
+    $and: [
+        { ratings: { $type: 'array', } },
+        { $expr: { $gt: [{ '$size': "$ratings" }, 1] } },
+        {
+            "ratings.score": {
+                $gt: 4
+            }
+        }
+    ]
+}, { ratings: 1 })
+
 //Find all products where the meta field is null
 db.products.find({
     "meta": null
@@ -389,4 +421,4 @@ db.products.find({ releaseDate: { $type: "date", $gt: new Date("2023-01-01") } }
 
 
 //Find all products where the available field is a boolean and true:
-db.products.find({ available: { $exists: true, $eq : true } })
+db.products.find({ available: { $exists: true, $eq: true } })
