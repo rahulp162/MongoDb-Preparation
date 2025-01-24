@@ -202,85 +202,151 @@ db.products.insertMany([
     }
 ])
 
-//Find all products whose category is not "Electronics"
+// Question 1: Find all products whose category is not "Electronics"
 db.products.find({
     category: { $ne: "Electronics" }
 })
 
-//Find all products that are available and have a price not equal to 1200.00.
+// Question 2: Find all products that are available and have a price not equal to 1200.00.
 db.products.find({
     $and: [
-        {
-            available: { $eq: true }
-        }, {
-            price: { $ne: 1200.00 }
-        }
+        { available: true },
+        { price: { $ne: 1200.00 } }
     ]
 })
 
-//Find all products where the releaseDate is not equal to "2023-06-01T00:00:00.000Z."
+// Question 3: Find all products where the releaseDate is not equal to "2023-06-01T00:00:00.000Z."
 db.products.find({ 
-    "releaseDate": { $ne: new Date("2023-06-01T00:00:00.000Z") } 
+    releaseDate: { $ne: new Date("2023-06-01T00:00:00.000Z") } 
 })
 
-//Find all products that do not have the tag "bluetooth."
+// Question 4: Find all products that do not have the tag "bluetooth."
 db.products.find({ 
-    "tags": { $ne: "bluetooth" } 
+    tags: { $ne: "bluetooth" } 
 })
 
-//Find all products whose price is not equal to 850.00, and they are discounted: false.
+// Question 5: Find all products whose price is not equal to 850.00, and they are discounted: false.
 db.products.find({ 
-    "price": { $ne: 850.00 }, 
-    "discounted": false 
+    price: { $ne: 850.00 }, 
+    discounted: false 
 })
 
-//Find all products that are available: true but have no ratings (i.e., an empty ratings array).
+// Question 6: Find all products that are available: true but have no ratings (i.e., an empty ratings array).
 db.products.find({ 
-    "available": true,
-    "ratings": { $size: 0 } 
+    available: true, 
+    ratings: { $size: 0 } 
 })
 
-//Find all products where the specs.processor is not "Intel Core i7."
+// Question 7: Find all products where the specs.processor is not "Intel Core i7."
 db.products.find({
     "specs.processor": { $ne: "Intel Core i7" } 
 })
 
-//Find all products that are available: true and do not have "Smart TV" in their specs.features.type.
+// Question 8: Find all products that are available: true and do not have "Smart TV" in their specs.features.type.
 db.products.find({ 
-    "available": true, 
+    available: true, 
     "specs.features.type": { $ne: "Smart TV" } 
 })
 
-//Find all products whose tags array does not include the tag "eco-friendly."
+// Question 9: Find all products whose tags array does not include the tag "eco-friendly."
 db.products.find({ 
-    "tags": { $ne: "eco-friendly" } 
+    tags: { $ne: "eco-friendly" } 
 })
 
-//Find all products where the ratings.score is not equal to 5.
-db.products.find({ 
-    "ratings.score": { $ne: 5 } 
+// Question 10: Find all products where the ratings.score is not equal to 5.
+db.products.find({
+    ratings: { $elemMatch: { score: { $ne: 5 } } }
 })
 
-//Find all products where the category is "Electronics" and price is not equal to 999.99.
+// Question 11: Find all products where the category is "Electronics" and price is not equal to 999.99.
 db.products.find({ 
-    "category": "Electronics", 
-    "price": { $ne: 999.99 } 
+    category: "Electronics", 
+    price: { $ne: 999.99 } 
 })
 
-//Find all products that do not have a relatedProducts array with an ID of 120.
+// Question 12: Find all products that do not have a relatedProducts array with an ID of 120.
 db.products.find({ 
-    "relatedProducts": { $ne: 120 } 
+    relatedProducts: { $ne: 120 } 
 })
-// Find all products where the `specs.ram` is not "16GB" and `price` is greater than 1000.
+
+// Question 13: Find all products where the specs.ram is not "16GB" and price is greater than 1000.
 db.products.find({ 
     "specs.ram": { $ne: "16GB" }, 
-    "price": { $gt: 1000 } 
+    price: { $gt: 1000 } 
 })
 
-// Find all products whose `category` is not "Home Appliances" and `price` is greater than 500.
+// Question 14: Find all products whose category is not "Home Appliances" and price is greater than 500.
 db.products.find({ 
-    "category": { $ne: "Home Appliances" }, 
-    "price": { $gt: 500 } 
+    category: { $ne: "Home Appliances" }, 
+    price: { $gt: 500 } 
 })
 
-//new change
+//Question 15: Find all products with a releaseDate in 2023 and no meta field value (i.e., meta is null).
+//for date in string
+db.products.find({
+    $and:[
+        {
+            releaseDate:{
+                $regex:"/^2023-/"
+            }
+        },{
+            meta:null
+        }
+    ]
+})
+//for date in ISODate() format or Date() format
+db.products.find({
+    $and: [
+        {
+            releaseDate: {
+                $gte: new Date("2023-01-01"), // new ISODate("2023-01-01")
+                $lt: new Date("2024-01-01")  // new Date("2024-01-01")
+            }
+        },
+        {
+            meta: null
+        }
+    ]
+})
+
+//Question 16: Find all products that are available, have a tag containing the word "electric," and have dimensions where the width is greater than 30
+db.products.find({
+    available:true,
+    tags:/electric/,
+    "dimensions.width":{$gt:30}
+})
+
+
+//Question 17: Find all products that are not discounted and where the specs.storage.type is not "SSD"
+db.products.find({
+    "specs.storage.type":{$ne:"SSD"},
+    "discounted":false
+})
+
+//Question 18: Find all products whose ratings array does not contain a review with a reviewDate after "2023-09-01T00:00:00.000Z".
+db.products.find({
+    ratings:{
+        $not:{
+            $elemMatch:{
+                "reviewDate":{$gt:"2023-09-01T00:00:00.000Z"}
+            }
+        }
+    }
+})
+
+//Question 19: Find all products where the ratings array does not include any entries with a userId of "63b21d49c254d7e8456789af".
+db.products.find({
+    ratings:{
+        $not:{
+            $elemMatch:{
+                userId:"63b21d49c254d7e8456789af"
+            }
+        }
+    }
+})
+
+//Question 20: Find all products where the dimensions.depth is not greater than 10.0 and the category is not "Home Appliances".
+db.products.find({
+    "dimensions.depth":{$not:{$gt:10}},
+    category:{$ne:"Home Appliances"}
+})

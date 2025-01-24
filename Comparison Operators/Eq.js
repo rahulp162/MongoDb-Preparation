@@ -202,18 +202,18 @@ db.products.insertMany([
     }
 ])
 
-//Find products with a price exactly equal to 999.99
+//Question-1: Find products with a price exactly equal to 999.99
 db.products.find({
     price:{$eq:999.99}
 })
 
-//Update the status field of a product where the productName is "Laptop" to "Out of Stock"
+//Question-2: Update the status field of a product where the productName is "Laptop" to "Out of Stock"
 db.products.update(
     {productName:{$eq:"Laptop"}},
     {$set:{status:"Out Of Stock"}}
 )
 
-//Update all products where category is "Electronics" and set the discounted field to true.
+//Question-3: Update all products where category is "Electronics" and set the discounted field to true.
 db.products.updateMany(
     {category:{$eq:"Electronics"}},
     {$set:{
@@ -221,43 +221,43 @@ db.products.updateMany(
     }}
 )
 
-//Delete a product where the price is exactly 1200.00.
+//Question-4: Delete a product where the price is exactly 1200.00.
 db.products.deleteOne({price:{$eq:1200.00}})
 
-//Delete products where the tags array contains the tag "gaming".
+//Question-5: Delete products where the tags array contains the tag "gaming".
 db.products.deleteMany({tags:{$eq:"gaming"}})
 
-//Find distinct tags where the category is "Home Appliances".
+//Question-6: Find distinct tags where the category is "Home Appliances".
 db.products.distinct("tags",{
     category:{$eq:"Home Appliances"}
 })
 
-//Find products where the tags array contains "eco-friendly" and available is true but the price is not 1200.00
+//Question-7: Find products where the tags array contains "eco-friendly" and available is true but the price is not 1200.00
 db.products.find({
     tags:{$in:"eco-friendly"},
     available:{$eq:true},
     price:{$ne:1200.00}
 })
 
-//Find products where the ratings contain a score of 5 and ratings.userId is "63b21d49c254d7e8456789ab"
+//Question-8: Find products where the ratings contain a score of 5 and ratings.userId is "63b21d49c254d7e8456789ab"
 db.products.find({
   "ratings.score": { $eq: 5 },
   "ratings.userId": { $eq: "63b21d49c254d7e8456789ab" }
 })
 
-//Find products where the tags contain "gaming" and the releaseDate is "2023-02-15"
+//Question-9: Find products where the tags contain "gaming" and the releaseDate is "2023-02-15"
 db.products.find({
   tags: { $in: ["gaming"] },
   releaseDate: { $eq: "2023-02-15T00:00:00.000Z" }
 })
 
-//Find products where specs.features.type is "Smart TV" and specs.screenSize is "55 inches"
+//Question-10: Find products where specs.features.type is "Smart TV" and specs.screenSize is "55 inches"
 db.products.find({
   "specs.features.type": { $eq: "Smart TV" },
   "specs.screenSize": { $eq: "55 inches" }
 })
 
-//Find products where the tags array exists and contains exactly 3 elements, and the productName is "Bluetooth Headphones"
+//Question-11: Find products where the tags array exists and contains exactly 3 elements, and the productName is "Bluetooth Headphones"
 db.products.find({
     $and:[
         {
@@ -272,7 +272,7 @@ db.products.find({
     ]
 })
 
-//Find products where the reviews array contains exact 3 elements and the category is "Electronics"
+//Question-12: Find products where the reviews array contains exact 3 elements and the category is "Electronics"
 db.products.find({
     $and:[
         {category:{
@@ -284,7 +284,7 @@ db.products.find({
     ]
 })
 
-//Find products where the tags array contains "laptop" or "gaming", and the specs.ram is "16GB"
+//Question-13: Find products where the tags array contains "laptop" or "gaming", and the specs.ram is "16GB"
 db.products.find({
     $and:[
         {
@@ -300,7 +300,7 @@ db.products.find({
     ]
 })
 
-//Find products where the releaseDate is either "2023-01-01" or "2023-03-10" and the tags array contains "high-performance"
+//Question-14: Find products where the releaseDate is either "2023-01-01" or "2023-03-10" and the tags array contains "high-performance"
 db.products.find({
     $and:[
         {

@@ -202,16 +202,16 @@ db.products.insertMany([
     }
 ])
 
-//Find products where the price is 850.00 and the tags contains "electric" or "gaming"
+//Question-1: Find products where the price is 850.00 and the tags contains "electric" or "gaming"
 db.products.find({
     price: { $eq: 850.00 },
     $or: [
-        { tags: { $eq: "electric" } },
-        { tags: { $eq: "gaming" } }
+        { tags: { $in: ["electric"] } },
+        { tags: { $in: ["gaming"] } }
     ]
 })
 
-//Find products where the releaseDate is exactly "2023-01-01" or category is "Transportation"
+//Question-2: Find products where the releaseDate is exactly "2023-01-01" or category is "Transportation"
 db.products.find({
     $or:[
         {releaseDate:{$eq:"2023-01-01"}},
@@ -219,7 +219,7 @@ db.products.find({
     ]
 })
 
-//Find products where the price is 850.00 or the category is "Home Appliances"
+//Question-3: Find products where the price is 850.00 or the category is "Home Appliances"
 db.products.find({
     $or:[
         {category:"Home Appliances"},
@@ -227,7 +227,7 @@ db.products.find({
     ]
 })
 
-//Find products where the tags contain "laptop" or price is less than 1000.00
+//Question-4: Find products where the tags contain "laptop" or price is less than 1000.00
 db.products.find({
     $or:[
         {tags:{$in:["laptop"]}},
@@ -235,7 +235,7 @@ db.products.find({
     ]
 })
 
-//Find products where the price is 850.00 or the specs.processor is "Intel Core i7"
+//Question-5: Find products where the price is 850.00 or the specs.processor is "Intel Core i7"
 db.products.find({
     $or:[
         {price:{$eq:850.00}},
@@ -243,7 +243,7 @@ db.products.find({
     ]
 })
 
-//Find products where tags contains "smartphone" or "5G" and price is exactly 699.99
+//Question-6: Find products where tags contains "smartphone" or "5G" and price is exactly 699.99
 db.products.find({
     $or:[
         {
@@ -256,7 +256,7 @@ db.products.find({
     price:{$eq:699.99}
 })
 
-//Find products where the releaseDate is either "2023-01-01" or "2023-03-10" and the tags array contains "high-performance"
+//Question-7: Find products where the releaseDate is either "2023-01-01" or "2023-03-10" and the tags array contains "high-performance"
 db.products.find({
     $and:[
         {
@@ -270,7 +270,7 @@ db.products.find({
     ]
 })
 
-//Find products that are either in the "Electronics" category or have a price of exactly $550
+//Question-8: Find products that are either in the "Electronics" category or have a price of exactly $550
 db.products.find({
   $or: [
     { category: { $eq: "Electronics" } },
@@ -278,7 +278,7 @@ db.products.find({
   ]
 });
 
-//Find products that are either tagged with "gaming" or have a rating of 5 from any user
+//Question-9: Find products that are either tagged with "gaming" or have a rating of 5 from any user
 db.products.find({
   $or: [
     { tags: { $eq: "gaming" } },
@@ -286,7 +286,7 @@ db.products.find({
   ]
 });
 
-//Find products where the price is either exactly $850 or discounted
+//Question-10: Find products where the price is either exactly $850 or discounted
 db.products.find({
   $or: [
     { price: { $eq: 850 } },
@@ -294,7 +294,7 @@ db.products.find({
   ]
 });
 
-//Find products that either have "Intel Core i7" or "AMD Ryzen 9" processors
+//Question-11: Find products that either have "Intel Core i7" or "AMD Ryzen 9" processors
 db.products.find({
   $or: [
     { "specs.processor": { $eq: "Intel Core i7" } },
@@ -302,7 +302,7 @@ db.products.find({
   ]
 });
 
-//Find products that are either in the "Home Appliances" category or are tagged with "eco-friendly"
+//Question-12: Find products that are either in the "Home Appliances" category or are tagged with "eco-friendly"
 db.products.find({
   $or: [
     { category: { $eq: "Home Appliances" } },
@@ -310,7 +310,7 @@ db.products.find({
   ]
 });
 
-//Find products that are either available or have a "Smart TV" feature
+//Question-13: Find products that are either available or have a "Smart TV" feature
 db.products.find({
   $or: [
     { available: { $eq: true } },
@@ -318,7 +318,7 @@ db.products.find({
   ]
 });
 
-//Find products that are either released in 2023 or have a width dimension of exactly 25.0 cm
+//Question-14: Find products that are either released in 2023 or have a width dimension of exactly 25.0 cm
 db.products.find({
   $or: [
     { releaseDate: { $gte: new ISODate("2023-01-01T00:00:00.000Z") } },
@@ -326,7 +326,7 @@ db.products.find({
   ]
 });
 
-//Find products that are either related to product ID 120 or have "noiseCancellation" as a feature
+//Question-15: Find products that are either related to product ID 120 or have "noiseCancellation" as a feature
 db.products.find({
   $or: [
     { relatedProducts: { $eq: 120 } },
@@ -334,7 +334,7 @@ db.products.find({
   ]
 });
 
-//Find products that either have a rating score of 4 or are tagged as "bluetooth"
+//Question-16: Find products that either have a rating score of 4 or are tagged as "bluetooth"
 db.products.find({
   $or: [
     { "ratings.score": { $eq: 4 } },
@@ -342,7 +342,7 @@ db.products.find({
   ]
 });
 
-//Find products that are either in the "Transportation" category or have a price greater than $1000
+//Question-17: Find products that are either in the "Transportation" category or have a price greater than $1000
 db.products.find({
   $or: [
     { category: { $eq: "Transportation" } },
