@@ -202,123 +202,137 @@ db.products.insertMany([
     }
 ])
 
+
+
+
+
+
+
+
+
+
+
+
+
 //Write a query to find the product with the productName "Gaming PC".
-db.products.find({"productName":"Gaming PC"})
+db.products.find({ "productName": "Gaming PC" })
 
 //DATATYPE variations
 //Find all products where the tags field is an array containing the string "eco-friendly"\
-db.products.find({"tag":"eco-friendly"})
+db.products.find({ "tag": "eco-friendly" })
 
 //Find all products where the releaseDate is of type Date and is after January 1, 2023
 db.products.find({
-    "releaseDate":{
-        $gt:new Date("2023-01-01")
+    "releaseDate": {
+        $gt: new Date("2023-01-01")
     }
 })
 
 //Find all products where the available field is a boolean and true:
 db.products.find({
-    "available":true
+    "available": true
 })
 
 //REGEX variations
 //exact match
-db.products.find({"category":"Electronics"})
+db.products.find({ "category": "Electronics" })
 
 //case insensitive match
-db.products.find({"category":{
-    $regex: "^Electronics$",
-    $options: "i"
-}})
+db.products.find({
+    "category": {
+        $regex: "^Electronics$",
+        $options: "i"
+    }
+})
 
 //Find documents where the productName starts with "E".
 db.products.find({
-    "productName":{
-        $regex:"^E"
+    "productName": {
+        $regex: "^E"
     }
 })
 //Find documents where the productName ends with "E"
 db.products.find({
-    "productName":{
-        $regex:"E$",
-        $options:"i"
+    "productName": {
+        $regex: "E$",
+        $options: "i"
     }
 })
 //Find documents where the productName contains "oo".
 db.products.find({
-    "productName":{
-        $regex:"oo",
-        $options:"i"
+    "productName": {
+        $regex: "oo",
+        $options: "i"
     }
 })
 //Find documents where the productName contains both "Espresso" and "Machine" (order doesn't matter).
 db.products.find({
-    "productName":{
-        $regex:"(el).*?(oo)",
-        $options:"i"
+    "productName": {
+        $regex: "(el).*?(oo)",
+        $options: "i"
     }
 })
 //Find documents where the ratings field is an array with at least one object that contains a score greater than 4
 db.products.find({
-    "ratings.score":{
-        $gt:4
+    "ratings.score": {
+        $gt: 4
     }
 })
 //Find all products where the meta field is null
 db.products.find({
-    "meta":null
+    "meta": null
 })
 //Find products where the dimensions field contains a width greater than 20 (assuming dimensions is an embedded document)
 db.products.find({
-    "dimensions.width":{
-        $gt:20
+    "dimensions.width": {
+        $gt: 20
     }
 })
 //Find all products where the specs.features.autoCleaning field is of type boolean and is set to true
 db.products.find({
-    "specs.features.autoCleaning":true
+    "specs.features.autoCleaning": true
 })
 //Find documents where the productName contains a period (".", special charecter)
 db.products.find({
-    "productName":{
-        $regex:"\\."
+    "productName": {
+        $regex: "\\."
     }
 })
 //Find documents where the productName contains a period (".") between "t" and "i"
 db.products.find({
-    "productName":{
-        $regex:"t\\.i"
+    "productName": {
+        $regex: "t\\.i"
     }
 })
 //Find documents where the productName is exactly 15 characters long
 db.products.find({
-    "productName":{
-        $regex:"^.{7}$"
+    "productName": {
+        $regex: "^.{7}$"
     }
 })
 //Find documents where the productName is greater than 10 characters
 db.products.find({
-    "productName":{
-        $regex:"^.{11,}$"
+    "productName": {
+        $regex: "^.{11,}$"
     }
 })
 //Find documents where the productName is greater than or equal to 10 characters
 db.products.find({
-    "productName":{
-        $regex:"^.{10,}$"
+    "productName": {
+        $regex: "^.{10,}$"
     }
 })
 //Find documents where the productName is less than or equal to 10 characters
 db.products.find({
-    "productName":{
-        $regex:"^.{0,10}$"
+    "productName": {
+        $regex: "^.{0,10}$"
     }
 })
 
 //CONDITIONAL QUERIES:
 //Find all products released after "2023-03-01"
 db.products.find({
-    
+
 })
 //Find products having Price less then 700$
 db.products.find({
@@ -329,9 +343,9 @@ db.products.find({
 
 //Find products having Price less than $900 and greater than $400
 db.products.find({
-    $and:[
-        {"price":{$lt:900}},
-        {"price":{$gt:400}}
+    $and: [
+        { "price": { $lt: 900 } },
+        { "price": { $gt: 400 } }
     ]
 })
 
@@ -339,32 +353,40 @@ db.products.find({
 //Find by DATE
 //Find products released after 2023-05-01
 db.products.find({
-    "releaseDate":{$gt:
-        "2023-05-01"
+    "releaseDate": {
+        $gt:
+            "2023-05-01"
     }
 })
 //Find products released on or before 2023-05-01
 db.products.find({
-    "releaseDate":{$lte:
-        "2023-05-01" 
+    "releaseDate": {
+        $lte:
+            "2023-05-01"
     }
 })
 //Find products released on new Date("2023-06-01T00:00:00.000Z")
 db.products.find({
-    "releaseDate":{$eq:
-        new Date("2023-06-01T00:00:00.000Z")
+    "releaseDate": {
+        $eq:
+            new Date("2023-06-01T00:00:00.000Z")
     }
 })
 //Find products released on new ISODate("2023-06-01T00:00:00.000Z")
 db.products.find({
-    "releaseDate":{$eq:
-        new ISODate("2023-05-05T00:00:00.000Z")
+    "releaseDate": {
+        $eq:
+            new ISODate("2023-05-05T00:00:00.000Z")
     }
 })
 
+/// how to check type of value in key
+db.products.find({ ratings: { $type: "string" } })
 
-//
+//Find all products where the releaseDate is of type Date and is after January 1, 2023
+db.products.find({ releaseDate: { $type: "date", $gt: new Date("2023-01-01") } })
 
 
 
-
+//Find all products where the available field is a boolean and true:
+db.products.find({ available: { $exists: true, $eq : true } })
