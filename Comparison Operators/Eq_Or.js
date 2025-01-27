@@ -211,11 +211,17 @@ db.products.find({
     ]
 })
 
+//Find products where the price is 850.00 and the tags contains "electric" or "gaming"
+db.products.find({
+    price: { $eq: 850.00 },
+    tags: { $in: ["electric","gaming"] },
+}, {tags : 1})
+
 //Find products where the releaseDate is exactly "2023-01-01" or category is "Transportation"
 db.products.find({
     $or:[
         {releaseDate:{$eq:"2023-01-01"}},
-        {category:{$eq:"Transportation"}}
+        {category:"Transportation"}
     ]
 })
 
