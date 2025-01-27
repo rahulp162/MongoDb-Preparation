@@ -16,7 +16,7 @@ db.products.insertMany([
             { "userId": "63b21d49c254d7e8456789ac", "score": 4, "reviewDate": "2023-09-16T00:00:00.000Z" }
         ],
         "available": true,
-        "tags": ["laptop", "ultrabook", "high-performance","5G"],
+        "tags": ["laptop", "ultrabook", "high-performance", "5G"],
         "releaseDate": "2023-01-01T00:00:00.000Z",
         "meta": null,
         "dimensions": { "width": 35.8, "height": 1.9, "depth": 24.7 },
@@ -204,40 +204,77 @@ db.products.insertMany([
 
 //Find all products with at least one rating where the score is exactly 5.
 db.products.find({
-    ratings:{$elemMatch:{
-        "score":{$eq:5}
-    }}
-})
-
-//Retrieve products with a rating score of 4 or higher, submitted after August 1st, 2023.
-db.products.find({
-    ratings:{
-        $elemMatch:{
-            "score":{$gte:4},
-            "reviewDate":{$gt:"2023-08-01"}
+    ratings: {
+        $elemMatch: {
+            "score": { $eq: 5 }
         }
     }
 })
 
-//Find Electronics products with high-performance laptop tags and ratings score above 4.
-
 db.products.find({
-    tags: "high-performance",
-    ratings: { 
-        $elemMatch: { 
-            score: { $gt: 4 } 
-        } 
+    $expr: { $gt: [{ "$size": "$ratings" }, 1] },
+    ratings: {
+        $elemMatch: {
+            "score": { $eq: 4 }
+        }
+    }
+}, { ratings: 1 })
+
+//Retrieve products with a rating score of 4 or higher, submitted after August 1st, 2023.
+db.products.find({
+    ratings: {
+        $elemMatch: {
+            "score": { $gte: 4 },
+            "reviewDate": { $gt: "2023-08-01" }
+        }
     }
 })
 
+//Retrieve products with a rating score of 4 or higher, submitted after August 1st, 2023.
+db.products.find({
+    "releaseDate": { $gt: new Date("2020-05-05T00:00:00.000Z") },
+    ratings: {
+        $elemMatch: {
+            "score": { $gte: 4 }
+        }
+    }
+}, { releaseDate: 1, ratings: 1 })
+
+
+//Find Electronics products with high-performance laptop tags and ratings score above 4.
+db.products.find({
+    tags: "high-performance",
+    ratings: {
+        $elemMatch: {
+            score: { $gt: 4 }
+        }
+    }
+}, { tags: 1, ratings: 1 })
+
+
 //Find Electronics products that: Have both "high-performance" and "5G" tags, and Contain at least one rating with a score higher than 4
 db.products.find({
-    $and:[
-        {tags:
-            {$all:["high-performance", "5G"]}
+    $and: [
+        {
+            tags:
+                { $all: ["high-performance", "5G"] }
         },
-        {ratings:{
-            $elemMatch:{score:{$gt:4}}
-        }}
+        {
+            ratings: {
+                $elemMatch: { score: { $gt: 4 } }
+            }
+        }
     ]
 })
+
+
+// Find products where at least one rating has a score greater than 4
+db.products.find({
+    ratings:
+    {
+        $elemMatch: { score: { $gt: 4 } }
+    }
+})
+
+
+// Find products where at least one rating has a score less than 3
