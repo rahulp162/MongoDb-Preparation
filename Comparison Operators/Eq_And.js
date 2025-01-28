@@ -201,9 +201,8 @@ db.products.insertMany([
         "discounted": false
     }
 ])
-
+//Question: 1
 //Find products where the price is 850.00 and the category is "Home Appliances"
-
 db.products.find({
   $and: [
     { price: { $eq: 850.00 } },
@@ -211,8 +210,8 @@ db.products.find({
   ]
 })
 
+//Question: 2
 //Find products where the price is 999.99 and the tags array contains "gaming"
-
 db.products.find({
   $and: [
     { price: { $eq: 999.99 } },
@@ -220,8 +219,8 @@ db.products.find({
   ]
 })
 
+//Question: 3
 //Find products where the status is "active" and the price is 1200.00
-
 db.products.find({
   $and: [
     { status: { $eq: "active" } },
@@ -229,8 +228,8 @@ db.products.find({
   ]
 })
 
+//Question: 4
 //Find products where the category is "Electronics" and the releaseDate is "2023-01-01"
-
 db.products.find({
   $and: [
     { category: { $eq: "Electronics" } },
@@ -238,8 +237,8 @@ db.products.find({
   ]
 })
 
+//Question: 5
 //Find products where the productName is "Gaming PC" and the available status is true
-
 db.products.find({
   $and: [
     { productName: { $eq: "Gaming PC" } },
@@ -247,8 +246,8 @@ db.products.find({
   ]
 })
 
+//Question: 6
 //Find products where the price is 700.00 and the tags array contains "5G"
-
 db.products.find({
   $and: [
     { price: { $eq: 700.00 } },
@@ -256,8 +255,8 @@ db.products.find({
   ]
 })
 
-//ind products where the tags contain "laptop" and price is less than 1000.00
-
+//Question: 7
+//Find products where the tags contain "laptop" and price is less than 1000.00
 db.products.find({
   $and: [
     { tags: { $eq: "laptop" } },
@@ -265,8 +264,8 @@ db.products.find({
   ]
 })
 
+//Question: 8
 //Find products where the price is 1799.99 and the ratings contain a score of 5
-
 db.products.find({
   $and: [
     { price: { $eq: 1799.99 } },
@@ -274,8 +273,8 @@ db.products.find({
   ]
 })
 
+//Question: 9
 //Find products where the price is 1200.00 and the discounted field is true
-
 db.products.find({
   $and: [
     { price: { $eq: 1200.00 } },
@@ -283,8 +282,8 @@ db.products.find({
   ]
 })
 
+//Question: 10
 //Find products where the category is "Accessories" and tags contains "bluetooth"
-
 db.products.find({
   $and: [
     { category: { $eq: "Accessories" } },
@@ -292,8 +291,8 @@ db.products.find({
   ]
 })
 
+//Question: 11
 //Find products where the releaseDate is "2023-03-10" and price is greater than 500.00
-
 db.products.find({
   $and: [
     { releaseDate: { $eq: "2023-03-10T00:00:00.000Z" } },
@@ -301,8 +300,8 @@ db.products.find({
   ]
 })
 
+//Question: 12
 //Find products where the tags contains "eco-friendly" and available status is false
-
 db.products.find({
   $and: [
     { tags: { $eq: "eco-friendly" } },
@@ -310,9 +309,8 @@ db.products.find({
   ]
 })
 
-
+//Question: 13
 //Find products where the price is 850.00 and the specs.processor is "Intel Core i7"
-
 db.products.find({
   $and: [
     { price: { $eq: 850.00 } },
@@ -320,8 +318,8 @@ db.products.find({
   ]
 })
 
+//Question: 14
 //Find products where the price is 699.99 and discounted is false
-
 db.products.find({
   $and: [
     { price: { $eq: 699.99 } },
@@ -329,8 +327,8 @@ db.products.find({
   ]
 })
 
+//Question: 15
 //Find products where the category is "Transportation" and price is 550.00
-
 db.products.find({
   $and: [
     { category: { $eq: "Transportation" } },
@@ -338,8 +336,8 @@ db.products.find({
   ]
 })
 
+//Question: 16
 //Find products where the tags contains "water-resistant" and the price is exactly 699.99
-
 db.products.find({
   $and: [
     { tags: { $eq: "water-resistant" } },
@@ -347,8 +345,8 @@ db.products.find({
   ]
 })
 
+//Question: 17
 //Find products where the category is "Electronics" and tags contain both "smartphone" and "5G"
-
 db.products.find({
   $and: [
     { category: { $eq: "Electronics" } },
@@ -357,6 +355,7 @@ db.products.find({
   ]
 })
 
+//Question: 18
 //Find products where the category is "Home Appliances" and the releaseDate is "2023-06-01"
 db.products.find({
   $and: [
@@ -365,16 +364,11 @@ db.products.find({
   ]
 })
 
+//Question: 19
 //Find products where the specs.storage.size is "1TB" or "512GB", and available is true
 db.products.find({
-    $and:[
-        {
-            "specs.storage.size": {$in:["1TB","512GB"]}
-        },
-        {
-            available:{
-                $eq:true
-            }
-        }
-    ]
+  $and: [
+    { "specs.storage.size": { $in: ["1TB", "512GB"] } },
+    { available: { $eq: true } }
+  ]
 })
