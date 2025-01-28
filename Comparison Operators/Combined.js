@@ -277,3 +277,54 @@ db.products.find({
   "warranty" : { $exists : true},
   "inventory.location.quantity" : { $gt : 100 }
 }, {"inventory" : true})
+
+
+
+
+// Which products are marked as both featured and bestsellers and were released after June 1, 2023?
+db.products.find({
+  isFeatured : true,
+  isBestSeller : true,
+  releaseDate : ISODate("2023-01-01T00:00:00Z")
+}, {releaseDate : 1})
+
+
+// Which products have both "Touchscreen" and "Backlit Keyboard" features, and their user reviews 
+// contain the words "great" or "excellent"?
+db.products.find({
+  "specs.features" : { $in : ["Touchscreen","Backlit Keyboard"] }
+})
+
+
+// Which products are priced between $1000 and $3000 
+// and do not have the tags "eco-friendly" or "noise-cancelling"?
+db.products.find({
+  tags : { $in : ["eco-friendly","noise-cancelling"]  }
+})
+
+
+// Which products are available or have the tags 
+// "gaming" or "portable", sorted by price (descending) and release date (ascending)?
+db.products.find({
+  tags : { $in : ["gaming","portable"] },
+}, {price : 1, releaseDate : 1}).sort({price : -1, releaseDate: 1})
+
+
+// Which products are priced above $500 but below $1500, have the tags 
+// "high-performance" or "5G", and do not belong to the "Accessories" category?
+db.products.find({
+  price : { $gt : 500, $lt : 1500 },
+  tags : { $in : ["high-performance","5G"] }
+},)
+
+
+db.products.find({
+  $and: [
+    { price: { $gt: 500, $lt: 1500 } },
+    { tags: { $in: ["high-performance", "5G"] } },
+    { $or: [
+        { category: { $ne: "Accessories" } }
+      ]
+    }
+  ]
+});
