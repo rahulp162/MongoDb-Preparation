@@ -275,6 +275,3 @@ db.products.find({
         $elemMatch: { score: { $gt: 4 } }
     }
 })
-
-
-// Find products where at least one rating has a score less than 3

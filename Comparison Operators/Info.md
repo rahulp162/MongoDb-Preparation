@@ -26,7 +26,5 @@ Comparison operators are used in MongoDB queries to compare a field's value with
 ## 8. `$nin`
 **Description**: Matches documents where the field's value is not in the specified array of values.
 
-
-
 ---
 These comparison operators can be combined to create more complex queries, allowing for fine-grained control over document selection in MongoDB.
