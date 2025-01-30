@@ -202,7 +202,7 @@ db.products.insertMany([
     }
 ])
 
-//Find all products with at least one rating where the score is exactly 5.
+//Question-1: Find all products with at least one rating where the score is exactly 5.
 db.products.find({
     ratings: {
         $elemMatch: {
@@ -220,7 +220,7 @@ db.products.find({
     }
 }, { ratings: 1 })
 
-//Retrieve products with a rating score of 4 or higher, submitted after August 1st, 2023.
+//Question-2: Retrieve products with a rating score of 4 or higher, submitted after August 1st, 2023.
 db.products.find({
     ratings: {
         $elemMatch: {
@@ -230,7 +230,7 @@ db.products.find({
     }
 })
 
-//Retrieve products with a rating score of 4 or higher, submitted after August 1st, 2023.
+//Question-3: Retrieve products with a rating score of 4 or higher, submitted after August 1st, 2023.
 db.products.find({
     "releaseDate": { $gt: new Date("2020-05-05T00:00:00.000Z") },
     ratings: {
@@ -241,7 +241,7 @@ db.products.find({
 }, { releaseDate: 1, ratings: 1 })
 
 
-//Find Electronics products with high-performance laptop tags and ratings score above 4.
+//Question-4: Find Electronics products with high-performance laptop tags and ratings score above 4.
 db.products.find({
     tags: "high-performance",
     ratings: {
@@ -252,7 +252,7 @@ db.products.find({
 }, { tags: 1, ratings: 1 })
 
 
-//Find Electronics products that: Have both "high-performance" and "5G" tags, and Contain at least one rating with a score higher than 4
+//Question-5: Find Electronics products that: Have both "high-performance" and "5G" tags, and Contain at least one rating with a score higher than 4
 db.products.find({
     $and: [
         {
@@ -267,11 +267,200 @@ db.products.find({
     ]
 })
 
-
-// Find products where at least one rating has a score greater than 4
+//Question-6:  Find products where at least one rating has a score greater than 4
 db.products.find({
     ratings:
     {
         $elemMatch: { score: { $gt: 4 } }
     }
 })
+
+//Question-7: Find all products where a user rated it exactly 5 but only before "2023-09-01".
+db.products.find({
+    ratings:{
+      $elemMatch:{
+        score:5,
+        reviewDate:{
+          $gt:"2023-09-01"
+        }
+      }
+    }
+  }).count()
+  
+  //Qusestion-8: Retrieve products where at least one user gave a score of 4 and reviewed it after "2023-09-01".
+  db.products.find({
+    ratings:{
+      $elemMatch:{
+        score:4,
+        reviewDate:{
+          $gt:"2023-09-01"
+        }
+      }
+    }
+  }).count()
+  
+  //Question-9: Find all products where a rating exists where the score is 4 and the userId is "63b21d49c254d7e8456789ae".
+  db.products.find({
+    ratings:{
+      $exists:true,
+      $elemMatch:{
+        score:4,
+        userId:"63b21d49c254d7e8456789ae"
+      }
+    }
+  }).count()
+  
+  //Question-11: Find all products where a rating exists with a score of 5, reviewed after September 1st, 2023, and the userId is not '63b21d49c254d7e8456789b0
+  db.products.find({
+    ratings:{
+      $exists:true,
+      $elemMatch:{
+        score:5,
+        reviewDate:{
+          $gt: "2023-09-01"
+        },
+        userId:{
+          $ne:'63b21d49c254d7e8456789b0'
+        }
+      }
+    }
+  }).count()
+  
+  //Question-12: Find all products where a rating exists with a score greater than or equal to 4, reviewed between August 20th, 2023, and September 1st, 2023, and the userId contains '6789'.
+  db.products.find({
+    ratings:{
+      $exists:true,
+      $elemMatch:{
+        score:{
+          $gte:4
+        },
+        reviewDate:{
+          $gte:"2023-08-01",
+          $lte:"2023-09-01",
+        },
+        userId:/6789/
+      }
+    }
+  }).count()
+  
+  //Question-13: Find all products where a rating exists with a score of 5, reviewed before September 10th, 2023, and the product is not discounted
+  db.products.find({
+    ratings:{
+      $elemMatch:{
+        score:5,
+        reviewDate:{
+          $lte:"2023-09-10"
+        }
+      }
+    },
+    discounted:false
+  }).count()
+  
+  //Question-14: Find all products where a rating exists with a score greater than 4.3, reviewed after July 1st, 2023, and the category is 'Electronics'
+  db.products.find({
+      "ratings": {
+        $elemMatch: {
+          "score": { $gt: 4.3 },
+          "reviewDate": { $gt: "2023-07-01" }
+        }
+      },
+      category: "Electronics"
+  }).count()
+  
+  //Question-15: Find all products where a rating exists with a score of 4, reviewed between August 1st, 2023, and August 30th, 2023, and the userId is not '63b21d49c254d7e8456789af', and the product is related to products with IDs 789 or 101
+  db.products.find({
+    ratings:{
+      $elemMatch:{
+        score:4,
+        reviewDate:{
+          $gte:"2023-08-01",
+          $lte:"2023-08-30",
+        },
+        userId:{
+          $ne:"63b21d49c254d7e8456789af"
+        }
+      }
+    }
+  }).count()
+  
+  //Question-16: Find all products where a rating exists with a score greater than or equal to 4, reviewed between September 1st, 2023, and September 10th, 2023, and the product is not discounted, and the category is 'Accessories'.
+  db.products.find({
+    ratings:{
+      $elemMatch:{
+        score:{
+          $gte:4
+        },
+        reviewDate:{
+          $lte:"2023-09-10",
+          $gte:"2023-09-01",
+        },
+      }
+    },
+    discounted:false
+  }).count()
+  
+  //Question-17: Find all products where a rating exists with a score greater than 4, reviewed on September 15th, 2023, and the userId starts with '63b', and the product is related to products with IDs 116 or 117
+  db.products.find({
+    rating:{
+      $elemMatch:{
+        score:{
+          $gt:4
+        },
+        reviewDate:"2023-09-15",
+        userId:/^63b/
+      }
+    },
+    relatedProducts:{
+      $in:[116,117]
+    }
+  }).count()
+  
+  //Question-18: Find all products where a rating exists with a score less than 5, reviewed after July 1st, 2023, and the product is available and priced greater than 500
+  db.products.find({
+    ratings:{
+      $elemMatch:{
+        score:{
+          $lt:5
+        },
+        reviewDate:{
+          $gt:"2023-07-01"
+        }
+      }
+    },
+    available:true,
+    price:{
+      $gt:500
+    }
+  }).count()
+  
+  //Question-19: Find all products where a rating exists with a score of 5, reviewed between September 1st, 2023, and September 20th, 2023, and the product is tagged with 'gaming' or 'high-performance', and priced greater than 1000
+  db.products.find({
+    ratings:{
+      $elemMatch:{
+        score:{
+          $eq:5
+        },
+        reviewDate:{
+          $gte:"2023-09-01",
+          $lte:"2023-09-20",
+        }
+      }
+    },
+    tags:{
+      $in:['gaming','high-performance']
+    },
+    price:{$gte:1000}
+  }).count()
+  
+  //Question-20: Find all products where a rating exists with a score of 5, reviewed after August 1st, 2023, and the userId does not start with '63b21d49c254d7e8456789b', and the category is 'Electronics'.
+  db.products.find({
+      "ratings": {
+          $elemMatch: {
+              "score": 5,
+              "reviewDate": { $gt:"2023-08-01T00:00:00.000Z" },
+              "userId": { $not: /63b21d49c254d7e8456789b/ }
+          }
+      },
+      "category": "Electronics"
+  })
+  
