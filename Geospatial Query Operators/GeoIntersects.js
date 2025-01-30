@@ -289,3 +289,89 @@ location: {
     },
     rating:{$gt:4.3}
 })
+
+//Question-9: Find places intersectng the polygon [[[90, 40], [120, 40], [120, -10], [90, -10], [90, 40]]] and opened after 2000
+db.places.find({
+location:{
+    $geoIntersects:{
+    $geometry:{
+        type:"Polygon",
+        coordinates:[[[90, 40], [120, 40], [120, -10], [90, -10], [90, 40]]]
+    }
+    }
+},
+opened:{
+    $gt:"2000-01-01"
+}
+}).count()
+
+//Question-10: Find places intersectng a polygon covering the Americas and opened after 1900.
+db.places.find({
+location:{
+    $geoIntersects:{
+    $geometry:{
+        type:"Polygon",
+        coordinates:[[[-110, 60], [-60, 60], [-60, -30], [-110, -30], [-110, 60]]]
+    }
+    }
+},
+opened:{
+    $gt:"1900-01-01"
+}
+}).count()
+
+//Question-19: Find places intersectng a polygon covering Europe OR having a rating above 4.7.
+db.places.find({
+$or:[{location:{
+    $geoIntersects:{
+    $geometry:{
+        type:"Polygon",
+        coordinates: [[[0, 60], [40, 60], [40, 30], [0, 30], [0, 60]]]
+    }
+    }
+}},
+{rating:{$gt:4.7}}]
+}).count()
+
+//Question-20: Find places inside a polygon with rating greater than or equal to 4.6 and category as Restaurant.
+//Polygon: Covers parts of East Asia., [[[120, 50], [140, 50], [140, 30], [120, 30], [120, 50]]]
+db.places.find({
+location:{
+    $geoIntersects:{
+    $geometry:{
+        type:"Polygon",
+        coordinates:[[[120, 50], [140, 50], [140, 30], [120, 30], [120, 50]]]
+    }
+    }
+},
+category:"Restaurant",
+rating:{$gte:4.6}
+}).count()
+
+//Question-21: Find places inside a polygon that opened in the last 55 years.
+//Current year: 2025
+//Polygon: Covers parts of Asia, [[[110, 50], [130, 50], [130, 30], [110, 30], [110, 50]]]
+db.places.find({
+location:{
+    $geoIntersects:{
+    $geometry:{
+        type:"Polygon",
+        coordinates: [[[110, 50], [130, 50], [130, 30], [110, 30], [110, 50]]]
+    }
+    }
+},
+opened:{
+    $gte:"1970-01-01"
+}
+}).count()
+
+//Question-22: Find all places inside a polygon covering North America and Europe.
+//Polygon: [[[-130, 60], [40, 60], [40, 30], [-130, 30], [-130, 60]]]
+db.places.find({
+"location": {
+    $geoWithin: {
+    $polygon: [[-130, 60], [40, 60], [40, 30], [-130, 30], [-130, 60]]
+    }
+}
+})
+
