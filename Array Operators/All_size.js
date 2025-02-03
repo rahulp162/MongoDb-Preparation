@@ -202,79 +202,77 @@ db.products.insertMany([
     }
 ])
 
-//Find all products with at least one rating where the score is exactly 5.
+
+//Question-1: Find all products where the tags array contains all of the following values: 'laptop', 'ultrabook', and 'high-performance'
 db.products.find({
-    ratings: {
-        $elemMatch: {
-            "score": { $eq: 5 }
-        }
+  tags:{
+    $all:['laptop', 'ultrabook','high-performance']
+  }
+}).count()
+
+//Question-2: Find all products where the tags array contains all of the following values: 'eco-friendly', 'electric', and 'scooter', and the price is less than 600
+db.products.find({
+  tags:{
+    $all:['eco-friendly', 'electric', 'scooter']
+  },
+  price:{
+    $lt:600
+  }
+}).count()
+
+//Question-3: Find all products where the ratings array contains exactly 2 elements, and the category is 'Electronics'
+db.products.find({
+  ratings:{
+    $size:2
+  },
+  category:"Electronics"
+}).count()
+
+//Question-4: Find all products where the tags array contains both 'gaming' and 'high-end', and where the ratings array contains a review with a score of 5 from any userId starting with '63b21d49c254d7e8456789'. Additionally, the price should be greater than 1500 but less than 2000, and the releaseDate is within the last 12 months
+//curruntDate: 2023-03-01
+db.products.find({
+  tags:{
+    $all:["gaming","high-end"]
+  },
+  ratings:{
+    $elemMatch:{
+      score:5,
+      userId:/^63b21d49c254d7e8456789/
     }
-})
+  },
+  price:{
+    $gte:1500,
+    $lte:2000
+  },
+  releaseDate:{
+    $gte:"2023-02-01"
+  }
+}).count()
 
+//Question-5: Find all products where the tags array contains 'gaming' and the specs.storage.type is 'NVMe SSD', 
+//the ratings array contains at least one review with a score of 5, 
+//and the price is greater than 1000 but less than 2000. The product should be in stock and have no reviews
 db.products.find({
-    $expr: { $gt: [{ "$size": "$ratings" }, 1] },
-    ratings: {
-        $elemMatch: {
-            "score": { $eq: 4 }
-        }
-    }
-}, { ratings: 1 })
-
-//Retrieve products with a rating score of 4 or higher, submitted after August 1st, 2023.
-db.products.find({
-    ratings: {
-        $elemMatch: {
-            "score": { $gte: 4 },
-            "reviewDate": { $gt: "2023-08-01" }
-        }
-    }
-})
-
-//Retrieve products with a rating score of 4 or higher, submitted after August 1st, 2023.
-db.products.find({
-    "releaseDate": { $gt: new Date("2020-05-05T00:00:00.000Z") },
-    ratings: {
-        $elemMatch: {
-            "score": { $gte: 4 }
-        }
-    }
-}, { releaseDate: 1, ratings: 1 })
-
-
-//Find Electronics products with high-performance laptop tags and ratings score above 4.
-db.products.find({
-    tags: "high-performance",
-    ratings: {
-        $elemMatch: {
-            score: { $gt: 4 }
-        }
-    }
-}, { tags: 1, ratings: 1 })
-
-
-//Find Electronics products that: Have both "high-performance" and "5G" tags, and Contain at least one rating with a score higher than 4
-db.products.find({
-    $and: [
-        {
-            tags:
-                { $all: ["high-performance", "5G"] }
-        },
-        {
-            ratings: {
-                $elemMatch: { score: { $gt: 4 } }
-            }
-        }
-    ]
-})
-
-
-// Find products where at least one rating has a score greater than 4
-db.products.find({
-    ratings:
-    {
-        $elemMatch: { score: { $gt: 4 } }
+    tags:{
+      $in:['gaming']
+    },
+    "specs.storage.type":'NVMe SSD',
+    ratings:{
+      $elemMatch:{
+        score:5
+      }  
+    },
+    price:{
+      $gte:1000,
+      $lte:2000
+    },
+    available:true,
+    reviews:{
+      $size:0
     }
 })
 
 
-// Find products where at least one rating has a score less than 3
+
+
+
