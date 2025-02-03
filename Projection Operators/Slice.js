@@ -194,7 +194,7 @@ db.products.find({},{
   "ratings":{
     $slice:1
   }
-}).count()
+}) 
 
 //Question-2: Retrieve the last two ratings for all products that have at least two ratings
 db.products.find({
@@ -206,14 +206,14 @@ db.products.find({
   }
 },{
   "ratings":{$slice:-2}
-}).count()
+}) 
 
 //Question-3: Show only the first storage option for all products
 db.products.find({},{
   "inventory.location":{
     $slice:1
   }
-}).count()
+}) 
 
 //Question-4: Find products with a price greater than $500, showing only their first rating.
 db.products.find({
@@ -224,7 +224,7 @@ db.products.find({
   "ratings":{
     $slice:1
   }
-}).count()
+}) 
 
 //Question-5: Get the first 2 tags for all products that have at least two tags
 db.products.find({
@@ -238,7 +238,7 @@ db.products.find({
   tags:{
     $slice:2
   }
-}).count()
+}) 
 
 //Quesiton-6: Retrieve products that are bestsellers and show only their last rating
 db.products.find({
@@ -248,4 +248,214 @@ db.products.find({
     $slice:-1
   }
 })
+
+//Question-7: Retrieve the last 2 ratings for products that have more than 1 rating.
+db.products.find({
+  $expr:{
+    $gt:[
+      {$size:"$ratings"},
+      1
+    ]
+  }
+},{
+  ratings:{
+    $slice:-2
+  }
+}) 
+
+//Question-8: Retrieve the first 3 ratings for the "Gaming PC Ultra" product.
+db.products.find({
+  productName:"Gaming PC Ultra"
+},{
+  ratings:{
+    $slice:3
+  }
+}) 
+
+//Question-9: Retrieve products that are best sellers, have at least 2 ratings, and show only the first 2 ratings
+db.products.find({
+  isBestSeller:true,
+  $expr:{
+    $gte:[
+      {$size:"$ratings"},
+      2
+    ]
+  }
+},{
+  ratings:{
+    $slice:2
+  }
+}) 
+
+//Question-10: Retrieve products in the "Electronics" category that have more than 1 rating and show the last rating
+db.products.find({
+  category:"Electronics",
+  $expr:{
+    $gt:[
+      {$size:"$ratings"},
+      1
+    ]
+  }
+},{
+  ratings:{
+    $slice:-1
+  }
+}) 
+
+//Question-11: Retrieve all products in the "Accessories" category with at least 1 rating and show the last 2 store locations from the inventory array
+db.products.find({
+  category:"Accessories",
+  $expr:{
+    $gte:[
+      {$size:"$ratings"},
+      1
+    ]
+  }
+},{
+  "inventory.locations":{
+    $slice:2
+  }
+}).pretty() 
+
+//Question-12: Retrieve products that have a release date before 2023-01-01 and show the first 2 ratings
+db.products.find({
+  releaseDate:{
+    $gt:ISODate("2023-01-01")
+  }
+},{
+  ratings:{
+    $slice:2
+  }
+}) 
+
+//Question-13: Retrieve products that have at least 2 ratings, where the price is greater than 500, and show the last 3 ratings.
+db.products.find({
+  $expr:{
+    $gt:[
+      {$size:"$ratings"},
+      1
+    ]
+  },
+  price:{
+    $gt:500
+  }
+},{
+  ratings:{
+    $slice:-3
+  }
+}) 
+
+//Question-14: Retrieve products with at least 2 ratings, a discounted price, and display the first rating only
+db.products.find({
+  $expr:{
+    $gte:[
+      {$size:"$ratings"},
+      2
+    ]
+  },
+  discountedPrice:{
+    $gt:0
+  }
+},{
+  ratings:{
+    $slice:1
+  }
+}) 
+
+//Question-15: Retrieve products that are in the "Transportation" category, have no ratings, and show the first 2 related products.
+db.products.find({
+  category:"Transportation",
+  ratings:{
+    $size:0
+  }
+},{
+  relatedProducts:{
+    $slice:2
+  }
+}) 
+
+//Question-16: Retrieve best-selling products in the "Electronics" category with more than 1 ratings, and show only the first 3 ratings.
+db.products.find({
+  isBestSeller:true,
+  category:"Electronics",
+  $expr:{
+    $gte:[
+      {$size:"$ratings"},
+      2
+    ]
+  }
+},{
+  ratings:{
+    $slice:3
+  }
+}) 
+
+//Question-17: Retrieve products in the "Accessories" category that have between 1 and 3 ratings, and show only the last 2 ratings
+db.products.find({
+  category:"Electronics",
+  $expr:{
+    $and:[
+      {$gte:[
+        {$size:"$ratings"},
+        1
+      ]},
+      {$lte:[
+        {$size:"$ratings"},
+        3
+      ]},
+      
+    ]
+  }
+},{
+  ratings:{
+    $slice:-2
+  }
+}) 
+
+//Question-18: Retrieve products that have a discounted price, are in the "Electronics" category, and show only the first rating for each
+db.products.find({
+  discountedPrice:{
+    $ne:null
+  },
+  category:"Electronics"
+},{
+  ratings:{
+    $slice:1
+  }
+}) 
+
+//Question-19: Retrieve products that have more than 1 rating, and their price is between 500 and 2000, and show the last 3 ratings
+db.products.find({
+  $expr:{
+    $gt:[
+      {$size:"$ratings"},
+      1
+    ]
+  },
+  price:{
+    $gte:500,
+    $lte:2000
+  }
+},{
+  ratings:{
+    $slice:3
+  }
+}) 
+
+//Question-20: Retrieve products in the "Electronics" category with less than 3 ratings, where inventory has at least 2 store locations, and show the first rating
+db.products.find({
+  category: "Electronics",
+  $expr: {
+    $and: [
+      { $lt: [{ $size: "$ratings" }, 3] },
+      { $gt: [{ $size: "$inventory.location" }, 1] }
+    ]
+  }
+}, {
+  ratings: { $slice: 1 }
+})
+
+
+
+
 
