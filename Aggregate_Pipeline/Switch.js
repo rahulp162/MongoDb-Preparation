@@ -881,7 +881,7 @@ db.products.aggregate([
                   ]
                   }
                 ]
-              },then:"Old Stock - Running Out"
+              },then:"Old Stock - Overstocked"
             },
           ],
           default:"Regular Stock"
