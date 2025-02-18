@@ -110,7 +110,7 @@ db.orders.insertMany([
 ])
 
 
-// Question: Group orders by customer ID and count the number of orders per customer.
+// Question-1: Group orders by customer ID and count the number of orders per customer.
 db.orders.aggregate([
     {
         $group: {
@@ -119,7 +119,7 @@ db.orders.aggregate([
         }
     }
 ])
-// Question: Calculate the total revenue from all orders.
+// Question-2: Calculate the total revenue from all orders.
 db.orders.aggregate([
     {
         $unwind: "$items"
@@ -131,7 +131,7 @@ db.orders.aggregate([
         }
     }
 ])
-// Question: Find the average price of items sold, grouped by product ID.
+// Question-3: Find the average price of items sold, grouped by product ID.
 db.orders.aggregate([
     {
         $unwind: "$items"
@@ -143,7 +143,7 @@ db.orders.aggregate([
         }
     }
 ])
-// Question: Count how many orders were shipped to each city.
+// Question-4: Count how many orders were shipped to each city.
 db.orders.aggregate([
     {
         $group: {
@@ -152,7 +152,7 @@ db.orders.aggregate([
         }
     }
 ])
-// Question: Determine the total number of items sold per product.
+// Question-5: Determine the total number of items sold per product.
 db.orders.aggregate([
     {
         $unwind: "$items"
@@ -164,7 +164,7 @@ db.orders.aggregate([
         }
     }
 ])
-// Question: Calculate the maximum price of any item sold across all orders.
+// Question-6: Calculate the maximum price of any item sold across all orders.
 db.orders.aggregate([
     {
         $unwind: "$items"
@@ -177,7 +177,7 @@ db.orders.aggregate([
     }
 ])
 
-// Question: Sum up the revenue for each order status.
+// Question-7: Sum up the revenue for each order status.
 db.orders.aggregate([
     {
         $unwind: "$items"
@@ -190,7 +190,7 @@ db.orders.aggregate([
     }
 ])
 
-// Question: Find the minimum number of items in any order.
+// Question-8: Find the minimum number of items in any order.
 db.orders.aggregate([
     {
         $unwind: "$items"
@@ -206,7 +206,7 @@ db.orders.aggregate([
         }
     }
 ])
-// Question: Group orders by country and calculate the average order value.
+// Question-9: Group orders by country and calculate the average order value.
 
 
 db.orders.aggregate([
@@ -223,7 +223,7 @@ db.orders.aggregate([
     }
 ])
 
-// Question: List the total revenue generated from each product type.
+// Question-10: List the total revenue generated from each product type.
 db.orders.aggregate([
     { $unwind: "$items" },
     {
@@ -237,7 +237,7 @@ db.orders.aggregate([
         }
     }
 ])
-// Question: Calculate the total number of items shipped, grouped by order date.
+// Question-11: Calculate the total number of items shipped, grouped by order date.
 db.orders.aggregate([
     {
         $unwind: "$items"
@@ -254,7 +254,7 @@ db.orders.aggregate([
 
 
 
-// Question: Determine the average number of items per order for each customer.
+// Question-12: Determine the average number of items per order for each customer.
 db.orders.aggregate([
     {
         $unwind: "$items"
@@ -269,7 +269,7 @@ db.orders.aggregate([
     }
 ])
 
-// Question: Count the number of orders in each status category.
+// Question-13: Count the number of orders in each status category.
 db.orders.aggregate([
     {
         $unwind: "$items"
@@ -287,7 +287,7 @@ db.orders.aggregate([
 
 
 
-// Question: Find the average item price for each city.
+// Question-14: Find the average item price for each city.
 db.orders.aggregate([
     {
         $unwind: "$items"
@@ -305,7 +305,7 @@ db.orders.aggregate([
 
 
 
-// Question: Calculate the total revenue for each city.
+// Question-15: Calculate the total revenue for each city.
 db.orders.aggregate([
     {
         $unwind: "$items"
@@ -320,7 +320,7 @@ db.orders.aggregate([
     }
 ])
 
-// Question: Identify the highest revenue order for each customer.
+// Question-16: Identify the highest revenue order for each customer.
 db.orders.aggregate([
     {
         $unwind: "$items"
@@ -335,17 +335,17 @@ db.orders.aggregate([
     }
 ])
 
-// Question: Count the total number of cancelled orders.
+// Question-17: Count the total number of cancelled orders.
 db.orders.aggregate([
     { $match: { status: "cancelled" } },
     { $group: { _id: null, count: { $sum: 1 } } }
 ])
-// Question: Find the lowest number of attendees for each type of status.
+// Question-18: Find the lowest number of attendees for each type of status.
 db.orders.aggregate([
     { $unwind: "$items" },
     { $group: { _id: "$status", min_attendees: { $min: "$items.quantity" } } }
 ])
-// Question: Calculate the total revenue for each customer.
+// Question-19: Calculate the total revenue for each customer.
 db.orders.aggregate([{
     $unwind: "$items"
 },
@@ -359,11 +359,109 @@ db.orders.aggregate([{
     }
 }
 ])
-// Question: Group orders by order date and count the total orders per date.
+// Question-20: Group orders by order date and count the total orders per date.
 db.orders.aggregate([
     {
         $group: {
             _id: "$orderDate", total_orders: { $sum: 1 }
         }
     }
+])
+
+//Question-21: Total Value of All Orders
+//Group all orders and calculate the total value of items in each order (sum of quantity * price for each item in the order).
+db.orders.aggregate([
+  {
+    $unwind:"$items"
+  },
+  {
+    $group:{
+      _id:11,
+      totalValue:{
+        $sum:{
+          $multiply:[
+            "$items.quantity","$items.price"
+          ]
+        }
+      }
+    }
+  }
+])
+
+//Question-22: Calculate the total number of items sold per city. 
+//Group orders by the shipping city and sum up the total number of items sold in each city.
+db.orders.aggregate([
+  {
+    $unwind:"$items"
+  },
+  {
+    $group:{
+      _id:"$shippingAddress.city",
+      totalSold:{
+        $sum:"$items.quantity"
+      }
+    }
+  }
+])
+
+//Question-23: Find the average order value for each customer. 
+//Calculate the average total value of orders placed by each customer, considering the sum of item prices for each order.
+db.orders.aggregate([
+  {
+    $unwind:"$items"
+  },
+  {
+    $group:{
+      _id:"$customerId",
+      avgTotal:{
+        $avg:{
+          $multiply:[
+            "$items.price","$items.quantity"
+          ]
+        }
+      },
+      orderCount:{
+        $sum:1
+      }
+    }
+  }
+])
+
+//Question-24: Find the product with the highest total revenue. 
+//Group orders by product and calculate the total revenue (quantity * price). Then, sort by the highest total revenue.
+db.orders.aggregate([
+  {
+    $unwind:"$items"
+  },
+  {
+    $group:{
+      _id:"$items.productId",
+      totalRev:{
+        $sum:{
+          $multiply:[
+            "$items.quantity","$items.price"
+          ]
+        }
+      }
+    }
+  },{
+    $sort:{
+      totalRev:-1
+    }
+  }
+])
+
+//Question-25: Calculate the average quantity of items ordered for each order. 
+//Group by order and calculate the average quantity of items in each order.
+db.orders.aggregate([
+  {
+    $unwind:"$items"
+  },{
+    $group:{
+      _id:"$orderId",
+      avgQuantity:{
+        $avg:"$items.quantity"
+      }
+    }
+  }
 ])
