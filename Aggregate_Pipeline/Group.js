@@ -106,6 +106,17 @@ db.orders.insertMany([
             { productId: "product5", quantity: 1, price: 200 }
         ],
         shippingAddress: { city: "San Jose", country: "USA" }
+    },
+    {
+        orderId: 12,
+        customerId: "customer8",
+        orderDate: ISODate("2024-03-10"),
+        status: "cancelled",
+        items: [
+            { productId: "product6", quantity: 2, price: 30 },
+            { productId: "product5", quantity: 1, price: 200 }
+        ],
+        shippingAddress: { city: "San Jose", country: "USA" }
     }
 ])
 
@@ -463,5 +474,232 @@ db.orders.aggregate([
         $avg:"$items.quantity"
       }
     }
+  }
+])
+
+//Question-26: Find the customer who has placed the highest number of orders
+db.orders.aggregate([
+  {
+    $unwind:"$items"
+  },
+  {
+    $group:{
+      _id:"$customerId",
+      totalOrders:{
+        $sum:"$items.quantity"
+      }
+    }
+  },
+  {
+    $sort:{
+      totalOrders:-1
+    }
+  },
+  {
+    $limit:1
+  }
+])
+
+//Question-27: Find the most frequently ordered product.
+db.orders.aggregate([
+  {
+    $unwind:"$items"
+  },
+  {
+    $group:{
+      _id:"$items.productId",
+      ordersCount:{
+        $sum:"$items.quantity"
+      }
+    }
+  },
+  {
+    $sort:{
+      ordersCount:-1
+    }
+  },{
+    $limit:1
+  }
+])
+
+//Question-28: Calculate the average order value for each order.
+db.orders.aggregate([
+  {
+    $unwind:"$items"
+  },{
+    $group:{
+      _id:"$orderId",
+      avgValue:{
+        $avg:{
+          $multiply:[
+            "$items.quantity" , "$items.price"
+          ]
+        }
+      }
+    }
+  }
+])
+
+//Question-29: Determine the month with the highest total revenue.
+db.orders.aggregate([
+  {
+    $unwind:"$items"
+  },{
+    $group:{
+      _id:{
+        $month:"$orderDate"
+      },
+      revenue:{
+        $sum:{
+          $multiply:["$items.price","$items.quantity"]
+        }
+      }
+    }
+  },{
+    $sort:{
+      revenue:-1
+    }
+  },{
+    $limit:1
+  }
+])
+
+//Question-30: Count the number of distinct customers who placed orders.
+db.orders.aggregate([
+  {
+    $group:{
+      _id:"$customerId"
+    }
+  },{
+    $count:"nOfCustomers"
+  }
+])
+
+//Question-31: Find the day with the most orders placed.
+db.orders.aggregate([
+  {
+    $unwind:"$items"
+  },{
+    $group:{
+      _id:{
+        $dayOfWeek:"$orderDate"
+      },
+      totalOrders:{
+        $sum:"$items.quantity"
+      }
+    }
+  },{
+    $sort:{
+      totalOrders:-1
+    }
+  },{
+    $limit:1
+  }
+])
+
+//Question-32: Find the highest-priced item ever ordered.
+db.orders.aggregate([
+  {
+    $unwind:"$items"
+  },{
+    $group:{
+      _id:"$items.price",
+    }
+  },{
+    $sort:{
+      _id:-1
+    }
+  },{
+    $limit:1
+  }
+])
+db.orders.aggregate([
+  {
+    $unwind:"$items"
+  },{
+    $group:{
+      _id:"costliest",
+      costliest:{
+        $max:"$items.price"
+      }
+    }
+  }
+])
+
+//Question-33: Calculate the average order amount per customer
+db.orders.aggregate([
+  {
+    $unwind:"$items"
+  },{
+    $group:{
+      _id:"$customerId",
+      avgOrderAmount:{
+        $avg:{
+          $multiply:["$items.price","$items.quantity"]
+        }
+      }
+    }
+  }
+])
+
+//Question-34: Find the most expensive order placed
+db.orders.aggregate([
+  {
+    $unwind:"$items"
+  },{
+    $group:{
+      _id:"$orderId",
+      totalCost:{
+        $sum:{
+          $multiply:["$items.quantity","$items.price"]
+        }
+      }
+    }
+  },{
+    $sort:{
+      totalCost:-1
+    }
+  },{
+    $limit:1
+  }
+])
+
+//Question-35: Find the total revenue for each year
+db.orders.aggregate([
+  {
+    $unwind:"$items"
+  },{
+    $group:{
+      _id:{
+        $year:"$orderDate"
+      },
+      revenue:{
+        $sum:{
+          $multiply:["$items.quantity","$items.price"]
+        }
+      }
+    }
+  }
+])
+
+//Question-36: Find the customer with the highest total order value
+db.orders.aggregate([
+  {
+    $unwind:"$items"
+  },{
+    $group:{
+      _id:"$customerId",
+      orderValue:{
+        $sum:{
+          $multiply:["$items.price","$items.quantity"]
+        }
+      }
+    }
+  },{
+    $sort:{
+      orderValue:-1
+    }
+  },{
+    $limit:1
   }
 ])
