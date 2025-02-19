@@ -179,6 +179,7 @@ db.products.find({
         { $or: [{ "specs.storage.type": "SSD" }, { "specs.display": "AMOLED" }] }
     ]
 });
+
 //////Question: Find products that either have no reviews or reviews older than a year, and must have "Intel Core i7" or "AMD Ryzen 9" processors.
 db.products.find({
     $and: [
@@ -215,6 +216,7 @@ db.products.find({
         }
     ]
 });
+
 //////Question: Find products in the "Electronics" category and either have no tags or have "high-performance" as a tag.
 db.products.find({
     $and: [
@@ -227,6 +229,7 @@ db.products.find({
         }
     ]
 });
+
 //////Question: Find products that are available and either have a release date after "2023-01-01" or a price less than $500.
 db.products.find({
     $and: [
