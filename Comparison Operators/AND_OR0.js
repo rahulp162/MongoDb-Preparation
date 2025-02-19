@@ -152,6 +152,7 @@ db.products.find({
         }
     ]
 });
+
 //////Question: Find products that either have a rating of 5 or are not rated, and must be in either the "Electronics" or "Transportation" category.
 db.products.find({
     $and: [
