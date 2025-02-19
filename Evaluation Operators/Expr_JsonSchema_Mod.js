@@ -224,248 +224,249 @@ db.products.insertMany(
         }
     ]
 )
-    
+
 //Question-1: Find products where the price is greater than 500 and divisible by 50.
 db.products.find({
-    price:{
-    $gt:500
+    price: {
+        $gt: 500
     },
-    $expr:{
-    $eq:[
-        {$mod:["$price",50]},0
-    ]
+    $expr: {
+        $eq: [
+            { $mod: ["$price", 50] }, 0
+        ]
     }
-},{
-    price:1,productName:1,_id:0
-}).pretty() 
+}, {
+    price: 1, productName: 1, _id: 0
+}).pretty()
 
 //Question-2: Find products where the width is an even number and the price is greater than its depth
 db.products.find({
-    "dimensions.width":{
-    $mod:[2,0]
+    "dimensions.width": {
+        $mod: [2, 0]
     },
-    $expr:{
-    $gt:[
-    "$price","$dimensions.depth"
-    ]
+    $expr: {
+        $gt: [
+            "$price", "$dimensions.depth"
+        ]
     }
-},{
-    _id:0, productName:1,price:1,dimensions:1
-}).pretty() 
+}, {
+    _id: 0, productName: 1, price: 1, dimensions: 1
+}).pretty()
 
 //Question-3: Find products that have valid numeric price and category fields following a JSON schema validation.
 db.products.find({
     $jsonSchema: {
-    bsonType: "object",
-    required: ["price", "category"],
-    properties: {
-        price: { bsonType: "double" },
-        category: { bsonType: "string" }
+        bsonType: "object",
+        required: ["price", "category"],
+        properties: {
+            price: { bsonType: "double" },
+            category: { bsonType: "string" }
+        }
     }
-    }
-}) 
+})
 
 //Question-4: Find products with at least one rating and where the first rating score is greater than 3.
 db.products.find({
     $expr: { $gt: [{ $arrayElemAt: ["$ratings.score", 0] }, 3] }
-}) 
+})
 
 //Question-5: Find products with width greater than height but divisible by 5.
 db.products.find({
-    $expr:{
-    $gt:[
-        "$dimensions.width","$dimensions.height"
-    ]
+    $expr: {
+        $gt: [
+            "$dimensions.width", "$dimensions.height"
+        ]
     },
-    "dimensions.width":{
-    $mod:[5,0]
+    "dimensions.width": {
+        $mod: [5, 0]
     }
-}) 
+})
 
 //Question-6: Find products where the height is greater than 10 and its width is an odd number.
 db.products.find({
-    "dimensions.height":{
-    $gt:10
+    "dimensions.height": {
+        $gt: 10
     },
-    "dimensions.width":{
-    $mod:[2,0]
+    "dimensions.width": {
+        $mod: [2, 0]
     }
-}) 
+})
 
 //Question-7: Find products with price greater than 800, divisible by 9, and have at least one rating.
 db.products.find({
-    price:{
-    $gt:800,
-    $mod:[9,0]
+    price: {
+        $gt: 800,
+        $mod: [9, 0]
     },
-    $expr:{
-    $gt:[
-        {$size:"$ratings"},
-        0
-    ]
+    $expr: {
+        $gt: [
+            { $size: "$ratings" },
+            0
+        ]
     }
-}) 
+})
 
 //Question-8:Find products where available is true and the width is a multiple of 10.
 db.products.find({
-    available:true,
-    "dimensions.width":{
-    $mod:[10,0]
+    available: true,
+    "dimensions.width": {
+        $mod: [10, 0]
     }
-},{dimensions:1,productName:1,_id:0}) 
+}, { dimensions: 1, productName: 1, _id: 0 })
 
 //Question-9: Find products where the depth is an even number and height is greater than 15.
 db.products.find({
-    "dimensions.depth":{
-    $mod:[2,0]
+    "dimensions.depth": {
+        $mod: [2, 0]
     },
-    "dimensions.height":{
-    $gt:15
+    "dimensions.height": {
+        $gt: 15
     }
-}) 
+})
 
 //Question-10: Find products where the price is greater than 600, its release date follows an ISODate format, and it has dimensions.
 db.products.find({
-    price:{
-    $gt:600
+    price: {
+        $gt: 600
     },
-    $jsonSchema:{
-    required:["releaseDate","dimensions"],
-    properties:{
-        releaseDate:{bsonType:"date"}
-    }
+    $jsonSchema: {
+        required: ["releaseDate", "dimensions"],
+        properties: {
+            releaseDate: { bsonType: "date" }
+        }
     },
-},{dimensions:1, productName:1,releaseDate:1,price:1, _id:0})
+}, { dimensions: 1, productName: 1, releaseDate: 1, price: 1, _id: 0 })
 
 //Question-11: Find products where the price is greater than 500, divisible by 50, and the product is available.
 db.products.find({
-    price:{
-      $gt:500,
-      $mod:[50,0]
+    price: {
+        $gt: 500,
+        $mod: [50, 0]
     },
-    available:true
+    available: true
 }).count()
 
 //Question-12: Find products with prices divisible by 50, have a width greater than 20, and have ratings from at least one user.
 db.products.find({
-price:{
-    $mod:[50,0],
-},
-$expr:{
-    $gt:[
-    {$size:"$ratings"},0  
-    ]
-},
-"dimensions.width":{
-    $gt:20
-}
+    price: {
+        $mod: [50, 0],
+    },
+    $expr: {
+        $gt: [
+            { $size: "$ratings" }, 0
+        ]
+    },
+    "dimensions.width": {
+        $gt: 20
+    }
 }).count()
 
 //Question-13: Find products where the price is a multiple of 50, and the product has ratings from at least one user.
 db.products.find({
-price:{
-    $mod:[10,0]
-},
-ratings:{
-    $ne:[]
-}
-},{
-ratings:1
+    price: {
+        $mod: [10, 0]
+    },
+    ratings: {
+        $ne: []
+    }
+}, {
+    ratings: 1
 }).count()
 
 //Question-14: Find products that have a price above $500 and match a strict JSON Schema validation.
 db.products.find({
-$and: [
-    { 
-    $expr: { $gt: ["$price", 500] } 
-    },
-    { 
-    $jsonSchema: {
-        required: ["productName", "price", "dimensions"],
-        properties: {
-        price: { bsonType: "double" },
-        dimensions: { bsonType: "object" }
+    $and: [
+        {
+            $expr: { $gt: ["$price", 500] }
+        },
+        {
+            $jsonSchema: {
+                required: ["productName", "price", "dimensions"],
+                properties: {
+                    price: { bsonType: "double" },
+                    dimensions: { bsonType: "object" }
+                }
+            }
         }
-    }
-    }
-]
+    ]
 }).count()
 
 //Question-15: Find products where the sum of ratings is greater than 4 and the price is divisible by 50.
 db.products.find({
-$expr:{
-    $gt:["$ratings.score",4]
-},
-price:{
-    $mod:[50,0]
-}
+    $expr: {
+        $gt: ["$ratings.score", 4]
+    },
+    price: {
+        $mod: [50, 0]
+    }
 }).count()
 
 //Question-16: Find products where the width is a multiple of 5, and the product is discounted.
 db.products.find({
-$and: [
-    { discounted: true },
-    { $expr: { 
-    $eq: [
-        { $mod: ["$dimensions.width", 5] }
-        , 
-        0]
-    } 
-    }
-]
+    $and: [
+        { discounted: true },
+        {
+            $expr: {
+                $eq: [
+                    { $mod: ["$dimensions.width", 5] }
+                    ,
+                    0]
+            }
+        }
+    ]
 }).count()
 
 //Question-17: Find products with at least one rating, price divisible by 50, and available.
 db.products.find({
-$expr:{
-    $gt:[
-    {$size:"$ratings"},0
-    ]
-},
-price:{
-    $mod:[50,0]
-},
-available:true
+    $expr: {
+        $gt: [
+            { $size: "$ratings" }, 0
+        ]
+    },
+    price: {
+        $mod: [50, 0]
+    },
+    available: true
 }).count()
 
 //Question-18: Find products where the depth is divisible by 5, price is above 500, and product is available.
 db.products.find({
-$and: [
-    { 
-    available: true 
-    },
-    { 
-    $expr: { 
-        $gt: ["$price", 500] 
-    }
-    },
-    { 
-    $expr: { 
-        $eq: [{ $mod: ["$dimensions.depth", 5] }, 0] 
-    } 
-    }
-]
+    $and: [
+        {
+            available: true
+        },
+        {
+            $expr: {
+                $gt: ["$price", 500]
+            }
+        },
+        {
+            $expr: {
+                $eq: [{ $mod: ["$dimensions.depth", 5] }, 0]
+            }
+        }
+    ]
 }).count()
 
 //Question-19: Find products that have a rating count that is NOT a multiple of 2, and the price is at least $500.
 db.products.find({
-$expr:{
-    $ne:[
-    {$mod:[{$size:"$ratings"},2]},0
-    ]
-},
-price:{
-    $gte:500
-}
+    $expr: {
+        $ne: [
+            { $mod: [{ $size: "$ratings" }, 2] }, 0
+        ]
+    },
+    price: {
+        $gte: 500
+    }
 }).count()
 
 //Question-20: Find products where relatedProducts contains at least one number that is a multiple of 5, and the product name ends with "n".
 db.products.find({
-relatedProducts:{
-    $elemMatch:{
-    $mod:[5,0]
-    }
-},
-productName:/n$/i
+    relatedProducts: {
+        $elemMatch: {
+            $mod: [5, 0]
+        }
+    },
+    productName: /n$/i
 })
-  
+
