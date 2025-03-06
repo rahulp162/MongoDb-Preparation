@@ -107,7 +107,9 @@ db.customers.insertMany([
 ]);
 
 // Basic Lookup:
-// Question: Perform a basic $lookup operation to join the orders collection with the products collection. Include the product details in the result for each order.
+// Question: Perform a basic $lookup operation to join the
+//  orders collection with the products collection. Include the produ
+// ct details in the result for each order.
 db.orders.aggregate([
     {
         $lookup: {
