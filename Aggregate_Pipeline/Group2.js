@@ -91,76 +91,171 @@ db.orders.insertMany([
   },
 ]);
 
-db.orders.find({}, { id: 1, customer: 1, category: 1 }).pretty();
+db.orders.find({}
+,{id:1,customer:1, category:1}
+).pretty()
 
 // 1️⃣ Count orders per category
-// db.orders.aggregate([
-// {
-//   $group : {
-//     _id : "$category",
-//     totalAwards : { $sum : 1 }
-//   }
-// }
-// ])
+db.orders.aggregate([
+{
+  $group : {
+    _id : "$category",
+    totalAwards : { $sum : 1 }
+  }
+}
+])
 
 // 2️⃣ Find total revenue per category
-// db.orders.aggregate([
-//   {
-//     $unwind : "$products"
-//   },
-//   {
-//     $group : {
-//       _id : "$category",
-//       TotalProductsRevenue : {
-//         $sum : { $multiply : ["$products.price","$products.quantity"] }
-//       }
-//     }
-//   }
-// ]).pretty()
+db.orders.aggregate([
+  {
+    $unwind : "$products"
+  },
+  {
+    $group : {
+      _id : "$category",
+      TotalProductsRevenue : {
+        $sum : { $multiply : ["$products.price","$products.quantity"] }
+      }
+    }
+  }
+]).pretty()
 
 // 3️⃣ Find total quantity sold per product
-// db.orders.aggregate([
-//   {
-//     $unwind : "$products"
-//   },
-//   {
-//   $group : {
-//     _id : "$products.name",
-//     totalProductSold : {
-//       $sum : "$products.quantity"
-//     }
-//   }
-//   }
-// ]).pretty()
+db.orders.aggregate([
+  {
+    $unwind : "$products"
+  },
+  {
+  $group : {
+    _id : "$products.name",
+    totalProductSold : {
+      $sum : "$products.quantity"
+    }
+  }
+  }
+]).pretty()
 
 // 5️⃣ Find total revenue per customer
-// db.orders.aggregate([
-//   {
-//     $unwind : "$products"
-//   },
-//   {
-//     $group : {
-//       _id : "$customer",
-//       total : {
-//         $sum : { $multiply : ["$products.price","$products.quantity"] }
-//       }
-//     }
-//   }
-// ])
+db.orders.aggregate([
+  {
+    $unwind : "$products"
+  },
+  {
+    $group : {
+      _id : "$customer",
+      total : {
+        $sum : { $multiply : ["$products.price","$products.quantity"] }
+      }
+    }
+  }
+])
 
 // 6️⃣ Find the most recent order for each customer
-// db.orders.aggregate([
-//   {
-//     $sort : {
-//       orderDate : -1
-//     }
-//   },
-//   {
-//     $group : {
-//       _id : "$customer",
-//       order : { $first : "$$ROOT" }
-//     }
-//   }
-// ]).pretty()
+db.orders.aggregate([
+  {
+    $sort : {
+      orderDate : -1
+    }
+  },
+  {
+    $group : {
+      _id : "$customer",
+      order : { $first : "$$ROOT" }
+    }
+  }
+]).pretty()
 
-// 7️⃣ Get a list of all unique brands per category
+// 8️⃣ Find total discount given per category
+db.orders.aggregate([
+  {
+    $group : {
+      _id : "$category",
+      orderDiscounts : {
+        $sum : "$discount"
+      }
+    }
+  }
+]).pretty()
+
+// 9️⃣ Count orders per payment method
+db.orders.aggregate([
+  {
+    $group : {
+      _id : "$payment.method",
+      orders : {
+        $sum : 1
+      }
+    }
+  }
+]).pretty()
+
+// 🔟 Get customers who have placed multiple orders
+db.orders.aggregate([
+  {
+    $group : {
+      _id : "$customer",
+      orders : {
+        $push : "$$ROOT"
+      },
+      orderCounts :{
+        $sum : 1
+      }
+    }
+  },
+  {
+    $match : {
+        $expr : {
+          $gt : [{$size : "$orders"},1]
+      }
+    }
+  }
+]).pretty()
+
+// 1️⃣ Find the most popular product (highest quantity sold)
+db.orders.aggregate([
+  { $unwind : "$products" },
+  {
+    $group : {
+      _id : "$products.name",
+      pd : {
+        $push : "$products"
+      },
+      totalQuntity : {
+        $sum : "$products.quantity"
+      }
+    }
+  },
+  {
+    $sort : {
+      totalQuntity : -1
+    }
+  }
+]).pretty()
+
+// 2️⃣ Find the highest spending customer
+db.orders.aggregate([
+  {
+    $unwind : "$products"
+  },
+  {
+    $group : {
+      _id : "$customer",
+      orders : {
+        $push : "$products"
+      },
+      total :{
+        $sum : {
+          $multiply :["$products.price","$products.quantity"]
+        }
+      }
+    }
+  },
+  {
+    $sort : {
+      total : -1
+    }
+  },
+  {
+    $limit : 1
+  }
+]).pretty()
