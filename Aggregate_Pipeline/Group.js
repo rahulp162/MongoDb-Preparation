@@ -120,6 +120,35 @@ db.orders.insertMany([
     }
 ])
 
+//get highestRevenueOrder 
+db.orders.aggregate([
+  {
+      $addFields: {
+          totalRevenue: { 
+              $sum: { 
+                  $map: { 
+                      input: "$items", 
+                      as: "item", 
+                      in: { $multiply: ["$$item.quantity", "$$item.price"] }
+                  }
+              }
+          }
+      }
+  },
+  {
+      $sort: { customerId: 1, totalRevenue: -1 }
+  },
+  {
+      $group: {
+          _id: "$customerId",
+          highestRevenueOrder: { $first: "$$ROOT" }
+      }
+  },
+  {
+      $replaceRoot: { newRoot: "$highestRevenueOrder" }
+  }
+]);
+
 
 // Question-1: Group orders by customer ID and count the number of orders per customer.
 db.orders.aggregate([

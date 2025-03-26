@@ -90,24 +90,118 @@ db.customers.insertMany([
         "customerId": "C1001",
         "name": "John Doe",
         "email": "john@example.com",
-        "address": "123 Main St"
+        "address": "A3"
     },
     {
         "customerId": "C1002",
         "name": "Jane Smith",
         "email": "jane@example.com",
-        "address": "456 Elm St"
+        "address": "A2"
     },
     {
         "customerId": "C1003",
         "name": "Alice Johnson",
         "email": "alice@example.com",
-        "address": "789 Oak St"
+        "address": "A1"
     }
 ]);
 
+
+db.addresses.insertMany([
+    {
+        "addressId": "A1",
+        "customerId": "C1001",
+        "street": "123 Main St",
+        "city": "New York",
+        "state": "NY",
+        "country": "USA",
+        "postalCode": "10001"
+    },
+    {
+        "addressId": "A2",
+        "customerId": "C1002",
+        "street": "456 Elm St",
+        "city": "Los Angeles",
+        "state": "CA",
+        "country": "USA",
+        "postalCode": "90001"
+    },
+    {
+        "addressId": "A3",
+        "customerId": "C1003",
+        "street": "789 Oak St",
+        "city": "Chicago",
+        "state": "IL",
+        "country": "USA",
+        "postalCode": "60601"
+    }
+]);
+
+
+
+
+
+
+
+
+db.orders.aggregate([
+    {
+        $match: {
+            "items.productId": 124 // Change this to the desired product ID
+        }
+    },
+    {
+        $lookup: {
+            from: "customers",
+            localField: "customerId",
+            foreignField: "customerId",
+            as: "customerId"
+        }
+    },
+    {
+        $unwind: "$customerId"
+    },
+]).pretty();
+
+
+
+
+db.orders.aggregate([
+    {
+        $match: {
+            "items.productId": 124 // Change this to the desired product ID
+        }
+    },
+    {
+        $lookup: {
+            from: "customers",
+            localField: "customerId",
+            foreignField: "customerId",
+            as: "customerDetails"
+        }
+    },
+    {
+        $unwind: "$customerDetails"
+    },
+    {
+        $lookup: {
+            from: "addresses",
+            localField: "customerDetails.address",
+            foreignField: "addressId",
+            as: "customerDetails.addressDetails"
+        }
+    },
+    {
+        $unwind: "$customerDetails.addressDetails"
+    },
+]);
+
+
+
 // Basic Lookup:
-// Question: Perform a basic $lookup operation to join the orders collection with the products collection. Include the product details in the result for each order.
+// Question: Perform a basic $lookup operation to join the
+//  orders collection with the products collection. Include the produ
+// ct details in the result for each order.
 db.orders.aggregate([
     {
         $lookup: {
