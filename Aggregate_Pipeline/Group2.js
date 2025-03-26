@@ -95,6 +95,18 @@ db.orders.find({}
 ,{id:1,customer:1, category:1}
 ).pretty()
 
+
+db.orders.aggregate([
+  {
+    $group : {
+      _id : "$category",
+      items : {$push : "$$ROOT"},
+    }
+  },{
+    $limit : 2
+  }
+  ]).pretty()
+
 // 1️⃣ Count orders per category
 db.orders.aggregate([
 {
