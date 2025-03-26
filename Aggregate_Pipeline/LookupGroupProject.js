@@ -140,6 +140,32 @@ db.addresses.insertMany([
 
 
 
+
+
+
+
+db.orders.aggregate([
+    {
+        $match: {
+            "items.productId": 124 // Change this to the desired product ID
+        }
+    },
+    {
+        $lookup: {
+            from: "customers",
+            localField: "customerId",
+            foreignField: "customerId",
+            as: "customerId"
+        }
+    },
+    {
+        $unwind: "$customerId"
+    },
+]).pretty();
+
+
+
+
 db.orders.aggregate([
     {
         $match: {
